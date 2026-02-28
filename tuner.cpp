@@ -1,10 +1,11 @@
 #include "includes.hpp"
 #include "eval.hpp"
+#include "search.hpp"
 #include <fstream>
 #include <random>
 
-double base_lr = 10;
-int batch_size = 1024;
+double base_lr = 50;
+int batch_size = 16384;
 
 std::vector<std::pair<std::string, double>> positions;
 
@@ -81,7 +82,7 @@ int main() {
 	std::cout << "Begin training..." << std::endl;
 
 	for (int epoch = 1; epoch <= 100; epoch++) {
-		double lr = base_lr * pow(0.99, epoch);
+		double lr = base_lr * pow(0.99, epoch-1);
 		// double lr = base_lr;
 
 		std::shuffle(positions.begin(), positions.end(), std::mt19937(std::random_device()()));
@@ -111,7 +112,7 @@ int main() {
 
 			// Update parameters
 			for (size_t k = 0; k < params.size(); k++) {
-				*params[k] -= EvalScore(avg_grads[k].first * lr, avg_grads[k].second * lr);
+				*params[k] -= EvalScore(avg_grads[k].first * lr / actual_batch_size, avg_grads[k].second * lr / actual_batch_size);
 			}
 		}
 		std::cout << "Epoch " << epoch << ", Loss: " << total_loss / positions.size() << std::endl;

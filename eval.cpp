@@ -1,18 +1,18 @@
 #include "eval.hpp"
 
 EvalScore MATERIAL_VALUES[] = {
-	ES(152, 255),
+	ES(154, 264),
 	ES(596, 608),
 	ES(686, 655),
 	ES(672, 1135),
-	ES(878, 1866),
-	ES(1000, 1000),
+	ES(879, 1939),
+	ES(10000, 10000),
 };
 
 EvalScore PAWN_PSQT[] = {
 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 
-	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(-10, -10), 	ES(-10, -10), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 
-	ES(-22, 20), 	ES(25, 29), 	ES(-4, 10), 	ES(20, 20), 	ES(20, 20), 	ES(52, 18), 	ES(109, 10), 	ES(3, 10), 
+	ES(0, 0), 	ES(1, 0), 	ES(0, 0), 	ES(-10, -10), 	ES(-10, -10), 	ES(21, 0), 	ES(95, 0), 	ES(0, 0), 
+	ES(-22, 20), 	ES(24, 29), 	ES(-4, 10), 	ES(20, 20), 	ES(20, 20), 	ES(51, 18), 	ES(82, 10), 	ES(3, 10), 
 	ES(-35, 4), 	ES(-1, 7), 	ES(-17, 16), 	ES(-21, 40), 	ES(4, 39), 	ES(-10, 13), 	ES(64, 5), 	ES(17, -15), 
 	ES(-24, 20), 	ES(7, 19), 	ES(-11, 29), 	ES(39, 40), 	ES(23, 39), 	ES(10, 29), 	ES(25, 19), 	ES(17, 18), 
 	ES(40, 40), 	ES(40, 40), 	ES(50, 50), 	ES(34, 50), 	ES(86, 50), 	ES(50, 50), 	ES(40, 40), 	ES(40, 40), 
@@ -33,7 +33,7 @@ EvalScore KNIGHT_PSQT[] = {
 
 EvalScore BISHOP_PSQT[] = {
 	ES(-20, -20), 	ES(-10, -10), 	ES(-73, -10), 	ES(-10, -10), 	ES(-10, -10), 	ES(-20, -10), 	ES(-10, -10), 	ES(-20, -20), 
-	ES(-10, -10), 	ES(-9, 0), 	ES(0, 0), 	ES(-15, 0), 	ES(-14, 0), 	ES(0, 0), 	ES(43, 0), 	ES(-10, -10), 
+	ES(-10, -10), 	ES(-9, 0), 	ES(0, 0), 	ES(-15, 0), 	ES(-14, 0), 	ES(0, 0), 	ES(42, 0), 	ES(-10, -10), 
 	ES(-10, -10), 	ES(0, 0), 	ES(10, 10), 	ES(22, 10), 	ES(19, 10), 	ES(10, 10), 	ES(0, 0), 	ES(-10, -10), 
 	ES(-10, -10), 	ES(0, 0), 	ES(10, 10), 	ES(10, 10), 	ES(10, 10), 	ES(10, 10), 	ES(0, 0), 	ES(-10, -10), 
 	ES(-10, -10), 	ES(0, 0), 	ES(10, 10), 	ES(10, 10), 	ES(10, 10), 	ES(10, 10), 	ES(0, 0), 	ES(-10, -10), 
@@ -139,6 +139,7 @@ std::vector<std::pair<double, double>> calc_grad(const Board &board) {
 		PieceType pt = PieceType(p & 7);
 		int side = p >> 3;
 		int idx = side == WHITE ? i : 56 ^ i; // mirror for black pieces
+		if (p == NO_PIECE) continue;
 
 		double cur_alpha = alpha * (side == WHITE ? 1 : -1);
 		double cur_beta = beta * (side == WHITE ? 1 : -1);
