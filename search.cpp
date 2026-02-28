@@ -57,6 +57,14 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 			best = score;
 			if (ply == 0) ti.best_move = move;
 		}
+
+		if (score > alpha) {
+			alpha = score;
+		}
+
+		if (score >= beta) {
+			return score;
+		}
 	}
 
 	if (best == -VALUE_INFINITE) {
