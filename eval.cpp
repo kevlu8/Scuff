@@ -5,8 +5,7 @@ EvalScore MATERIAL_VALUES[] = {
 	ES(596, 608),
 	ES(686, 655),
 	ES(672, 1135),
-	ES(879, 1939),
-	ES(10000, 10000),
+	ES(879, 1939)
 };
 
 EvalScore PAWN_PSQT[] = {

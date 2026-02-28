@@ -46,11 +46,13 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	pzstd::vector<Move> moves;
 	board.legal_moves(moves);
 	
-	pzstd::vector<std::pair<Move, Value>> scored_moves;
+	pzstd::vector<std::pair<Move, int>> scored_moves;
 	for (const auto &move : moves) {
-		Value score = 0;
+		int score = 0;
 		if (board.is_capture(move)) {
-			score += MVV[board.mailbox[move.dst()] & 7] - PieceValue[board.mailbox[move.src()] & 7];
+			score = 1000000 + MVV[board.mailbox[move.dst()] & 7] - PieceValue[board.mailbox[move.src()] & 7];
+		} else {
+			score = ti.thread_hist.history[board.side][move.src()][move.dst()];
 		}
 		scored_moves.push_back({move, score});
 	}
@@ -75,6 +77,7 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 		}
 
 		if (score >= beta) {
+			ti.thread_hist.update_history(board, move, depth * depth);
 			return score;
 		}
 	}

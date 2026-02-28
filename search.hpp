@@ -3,6 +3,7 @@
 #include "bitboard.hpp"
 #include "eval.hpp"
 #include "includes.hpp"
+#include "history.hpp"
 
 extern bool stop_search;
 extern uint64_t nodes[MAX_THREADS];
@@ -12,6 +13,8 @@ struct ThreadInfo {
 	Board board;
 	Move best_move;
 	int id;
+
+	History thread_hist;
 };
 
 void search(ThreadInfo *tis, uint64_t time, int depth, uint64_t nodes, bool quiet);
