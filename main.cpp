@@ -17,7 +17,7 @@ bool quiet = false;
 ThreadInfo *tis;
 
 uint64_t timemgmt(int timeleft, int inc) {
-	return timeleft * 0.1 + inc * 0.8;
+	return timeleft * 0.06 + inc * 0.8;
 }
 
 void run_uci() {
