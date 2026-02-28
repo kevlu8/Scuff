@@ -1,103 +1,174 @@
 #include "eval.hpp"
 
-
-constexpr int PAWN_PSQT[] = {
-	0, 0, 0, 0, 0, 0, 0, 0, // 8
-	80, 80, 80, 80, 80, 80, 80, 80, // 7
-	40, 40, 50, 50, 50, 50, 40, 40, // 6
-	20, 20, 30, 40, 40, 30, 20, 20, // 5
-	10, 10, 20, 40, 40, 20, 10, 10, // 4
-	5, 5, 10, 20, 20, 10, 5, 5, // 3
-	0, 0, 0, -10, -10, 0, 0, 0, // 2
-	0, 0, 0, 0, 0, 0, 0, 0 // 1
+EvalScore MATERIAL_VALUES[] = {
+	ES(0, 0), ES(100, 100), ES(350, 350), ES(350, 350), ES(525, 525), ES(1000, 1000)
 };
 
-constexpr int KNIGHT_PSQT[] = {
-	-50, -30, -20, -20, -20, -20, -30, -50,
-	-30, -20, 0, 0, 0, 0, -20, -30,
-	-20, 0, 10, 15, 15, 10, 0, -20,
-	-20, 5, 15, 20, 20, 15, 5, -20,
-	-20, 0, 15, 20, 20, 15, 0, -20,
-	-20, 5, 10, 15, 15, 10, 5, -20,
-	-30, -20, 0, 5, 5, 0, -20, -30,
-	-50, -30, -20, -20, -20, -20, -30, -50
+EvalScore PAWN_PSQT[] = {
+	ES(0, 0), ES(0, 0), ES(0, 0), ES(-10, -10), ES(-10, -10), ES(0, 0), ES(0, 0), ES(0, 0),
+	ES(5, 5), ES(5, 5), ES(10, 10), ES(20, 20), ES(20, 20), ES(10, 10), ES(5, 5), ES(5, 5),
+	ES(10, 10), ES(10, 10), ES(20, 20), ES(40, 40), ES(40, 40), ES(20, 20), ES(10, 10), ES(10, 10),
+	ES(20, 20), ES(20, 20), ES(30, 30), ES(40, 40), ES(40, 40), ES(30, 30), ES(20, 20), ES(20, 20),
+	ES(40, 40), ES(40, 40), ES(50, 50), ES(50, 50), ES(50, 50), ES(50, 50), ES(40, 40), ES(40, 40),
+	ES(80, 80), ES(80, 80), ES(80, 80), ES(80, 80), ES(80, 80), ES(80, 80), ES(80, 80), ES(80, 80),
+	ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0),
 };
 
-constexpr int BISHOP_PSQT[] = {
-	-20, -10, -10, -10, -10, -10, -10, -20,
-	-10, 0, 0, 0, 0, 0, 0, -10,
-	-10, 0, 10, 10, 10, 10, 0, -10,
-	-10, 0, 10, 10, 10, 10, 0, -10,
-	-10, 0, 10, 10, 10, 10, 0, -10,
-	-10, 10, 10, 10, 10, 10, 10, -10,
-	-10, 20, 0, 0, 0, 0, 20, -10,
-	-20, -10, -10, -10, -10, -10, -10, -20
+EvalScore KNIGHT_PSQT[] = {
+	ES(-50, -30), ES(-30, -20), ES(-20, -20), ES(-20, -20), ES(-20, -20), ES(-20, -20), ES(-30, -20), ES(-50, -30),
+	ES(-30, -20), ES(-20, 0), ES(10, 15), ES(15, 15), ES(15, 15), ES(15, 15), ES(15, 15), ES(-30, -20),
+	ES(-20, 5), ES(15, 15), ES(15, 15), ES(20, 20), ES(20, 20), ES(15, 15), ES(15, 15), ES(-20, 5),
+	ES(-20, 0), ES(15, 20), ES(20, 20), ES(20, 20), ES(20, 20), ES(15, 15), ES(0, 10), ES(-20, 5),
+	ES(-20, 0), ES(15, 20), ES(20, 20), ES(20, 20), ES(20, 20), ES(15, 15), ES(0, 10), ES(-20, 5),
+	ES(-20, 5), ES(10, 15), ES(15, 15), ES(15, 15), ES(15, 15), ES(10, 15), ES(5, 5), ES(-20, 5),
+	ES(-30, -20), ES(0, 5), ES(5, 5), ES(0, 0), ES(0, 0), ES(5, 5), ES(-20, 0), ES(-30, -20),
+	ES(-50, -30), ES(-30, -20), ES(-20, -20), ES(-20, -20), ES(-20, -20), ES(-20, -20), ES(-30, -20), ES(-50, -30)
 };
 
-constexpr int ROOK_PSQT[] = {
-	0, 0, 0, 0, 0, 0, 0, 0,
-	5, 10, 10, 10, 10, 10, 10, 5,
-	-5, 0, 0, 0, 0, 0, 0, -5,
-	-5, 0, 0, 0, 0, 0, 0, -5,
-	-5, 0, 0, 0, 0, 0, 0, -5,
-	-5, 0, 0, 0, 0, 0, -5,
-	-5, 0, 0, 0, 0, 0, 0, -5,
-	0, 0, 5, 10, 10, 5, 0, 0
+EvalScore BISHOP_PSQT[] = {
+	ES(-20, -20), ES(-10, -10), ES(-10, -10), ES(-10, -10), ES(-10, -10), ES(-10, -10), ES(-10, -10), ES(-20, -20),
+	ES(-10, -10), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(-10, -10),
+	ES(-10, -10), ES(0, 0), ES(10, 10), ES(10, 10), ES(10, 10), ES(10, 10), ES(0, 0), ES(-10, -10),
+	ES(-10, -10), ES(0, 0), ES(10, 10), ES(10, 10), ES(10, 10), ES(10, 10), ES(0, 0), ES(-10, -10),
+	ES(-10, -10), ES(0, 0), ES(10, 10), ES(10, 10), ES(10, 10), ES(10, 10), ES(0, 0), ES(-10, -10),
+	ES(-10, -10), ES(10, 10), ES(10, 10), ES(10, 10), ES(10, 10), ES(10, 10), ES(10, 10), ES(-10, -10),
+	ES(-10, -10), ES(20, 20), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(20, 20), ES(-10, -10),
+	ES(-20, -20), ES(-10, -10), ES(-10, -10), ES(-10, -10), ES(-10, -10), ES(-10, -10), ES(-10, -10), ES(-20, -20)
 };
 
-constexpr int QUEEN_PSQT[] = {
-	-20, -10, -10, -5, -5, -10, -10, -20,
-	-10, 0, 0, 0, 0, 0, 0, -10,
-	-10, 0, 5, 5, 5, 5, 0, -10,
-	-5, 0, 5, 5, 5, 5, 0, -5,
-	0, 0, 5, 5, 5, 5, 0, -10,
-	-10, 5, 5, 5, 5, 5, 0, -10,
-	-10, 0, 5, 0, 0, 0, 0, -10,
-	-20, -10, -10, -5, -5, -10, -10, -20
+EvalScore ROOK_PSQT[] = {
+	ES(0, 0), ES(0, 0), ES(5, 5), ES(10, 10), ES(10, 10), ES(5, 5), ES(0, 0), ES(0, 0),
+	ES(-5, -5), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(-5, -5),
+	ES(-5, -5), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(-5, -5),
+	ES(-5, -5), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(-5, -5),
+	ES(-5, -5), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(-5, -5),
+	ES(-5, -5), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(-5, -5),
+	ES(5, 5), ES(10, 10), ES(10, 10), ES(10, 10), ES(10, 10), ES(10, 10), ES(10, 10), ES(5, 5),
+	ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0),
 };
 
-constexpr int KING_PSQT[] = {
-	-30, -40, -40, -50, -50, -40, -40, -30,
-	-30, -40, -40, -50, -50, -40, -40, -30,
-	-30, -40, -40, -50, -50, -40, -40, -30,
-	-30, -40, -40, -50, -50, -40, -40, -30,
-	-20, -30, -30, -40, -40, -30, -30, -20,
-	-10, 20, 20, 0, 0, 20, 20, -10,
-	20, 20, 20, 20, 20, 20, 20, 20,
-	20, 30, 10, 0, 0, 10, 30, 20
+EvalScore QUEEN_PSQT[] = {
+	ES(-20, -20), ES(-10, -10), ES(-10, -10), ES(-5, -5), ES(-5, -5), ES(-10, -10), ES(-10, -10), ES(-20, -20),
+	ES(-10, -10), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(-10, -10),
+	ES(-10, -10), ES(0, 0), ES(5, 5), ES(5, 5), ES(5, 5), ES(5, 5), ES(0, 0), ES(-10, -10),
+	ES(-5, -5), ES(0, 0), ES(5, 5), ES(5, 5), ES(5, 5), ES(5, 5), ES(0, 0), ES(-5, -5),
+	ES(0, 0), ES(0, 0), ES(5, 5), ES(5, 5), ES(5, 5), ES(5, 5), ES(0, 0), ES(-10, -10),
+	ES(-10, -10), ES(5, 5), ES(5, 5), ES(5, 5), ES(5, 5), ES(5, 5), ES(0, 0), ES(-10, -10),
+	ES(-10, -10), ES(0, 0), ES(5, 5), ES(0, 0), ES(0, 0), ES(0, 0), ES(0, 0), ES(-10, -10),
+	ES(-20, -20), ES(-10, -10), ES(-10, -10), ES(-5, -5), ES(-5, -5), ES(-10, -10), ES(-10, -10), ES(-20, -20)
+};
+
+EvalScore KING_PSQT[] = {
+	ES(20, 20), ES(30, 30), ES(10, 10), ES(0, 0), ES(0, 0), ES(10, 10), ES(30, 30), ES(20, 20),
+	ES(20, 20), ES(20, 20), ES(20, 20), ES(20, 20), ES(20, 20), ES(20, 20), ES(20, 20), ES(20, 20),
+	ES(-10, -10), ES(20, 20), ES(20, 20), ES(0, 0), ES(0, 0), ES(20, 20), ES(20, 20), ES(-10, -10),
+	ES(-20, -20), ES(-30, -30), ES(-30, -30), ES(-40, -40), ES(-40, -40), ES(-30, -30), ES(-30, -30), ES(-20, -20),
+	ES(-30, -30), ES(-40, -40), ES(-40, -40), ES(-50, -50), ES(-50, -50), ES(-40, -40), ES(-40, -40), ES(-30, -30),
+	ES(-30, -30), ES(-40, -40), ES(-40, -40), ES(-50, -50), ES(-50, -50), ES(-40, -40), ES(-40, -40), ES(-30, -30),
+	ES(-30, -30), ES(-40, -40), ES(-40, -40), ES(-50, -50), ES(-50, -50), ES(-40, -40), ES(-40, -40), ES(-30, -30),
+	ES(-30, -30), ES(-40, -40), ES(-40, -40), ES(-50, -50), ES(-50, -50), ES(-40, -40), ES(-40, -40), ES(-30, -30),
 };
 
 Value eval(const Board &board) {
-	Value material = 0;
+	EvalScore material = 0;
 
-	material += PieceValue[PAWN] * (_mm_popcnt_u64(board.piece_boards[OCC(WHITE)] & board.piece_boards[PAWN]) - _mm_popcnt_u64(board.piece_boards[OCC(BLACK)] & board.piece_boards[PAWN]));
-	material += PieceValue[KNIGHT] * (_mm_popcnt_u64(board.piece_boards[OCC(WHITE)] & board.piece_boards[KNIGHT]) - _mm_popcnt_u64(board.piece_boards[OCC(BLACK)] & board.piece_boards[KNIGHT]));
-	material += PieceValue[BISHOP] * (_mm_popcnt_u64(board.piece_boards[OCC(WHITE)] & board.piece_boards[BISHOP]) - _mm_popcnt_u64(board.piece_boards[OCC(BLACK)] & board.piece_boards[BISHOP]));
-	material += PieceValue[ROOK] * (_mm_popcnt_u64(board.piece_boards[OCC(WHITE)] & board.piece_boards[ROOK]) - _mm_popcnt_u64(board.piece_boards[OCC(BLACK)] & board.piece_boards[ROOK]));
-	material += PieceValue[QUEEN] * (_mm_popcnt_u64(board.piece_boards[OCC(WHITE)] & board.piece_boards[QUEEN]) - _mm_popcnt_u64(board.piece_boards[OCC(BLACK)] & board.piece_boards[QUEEN]));
+	material += MATERIAL_VALUES[PAWN] * (_mm_popcnt_u64(board.piece_boards[OCC(WHITE)] & board.piece_boards[PAWN]) - _mm_popcnt_u64(board.piece_boards[OCC(BLACK)] & board.piece_boards[PAWN]));
+	material += MATERIAL_VALUES[KNIGHT] * (_mm_popcnt_u64(board.piece_boards[OCC(WHITE)] & board.piece_boards[KNIGHT]) - _mm_popcnt_u64(board.piece_boards[OCC(BLACK)] & board.piece_boards[KNIGHT]));
+	material += MATERIAL_VALUES[BISHOP] * (_mm_popcnt_u64(board.piece_boards[OCC(WHITE)] & board.piece_boards[BISHOP]) - _mm_popcnt_u64(board.piece_boards[OCC(BLACK)] & board.piece_boards[BISHOP]));
+	material += MATERIAL_VALUES[ROOK] * (_mm_popcnt_u64(board.piece_boards[OCC(WHITE)] & board.piece_boards[ROOK]) - _mm_popcnt_u64(board.piece_boards[OCC(BLACK)] & board.piece_boards[ROOK]));
+	material += MATERIAL_VALUES[QUEEN] * (_mm_popcnt_u64(board.piece_boards[OCC(WHITE)] & board.piece_boards[QUEEN]) - _mm_popcnt_u64(board.piece_boards[OCC(BLACK)] & board.piece_boards[QUEEN]));
 
-	Value psqt = 0;
+	EvalScore psqt = 0;
 	for (int i = 0; i < 64; i++) {
 		Piece p = board.mailbox[i];
 		PieceType pt = PieceType(p & 7);
 		int side = p >> 3;
+		int idx = side == WHITE ? i : 56 ^ i; // mirror for black pieces
 		if (p == NO_PIECE) continue;
 		if (pt == PAWN)
-			psqt += PAWN_PSQT[56 ^ i] * (side == WHITE ? 1 : -1);
+			psqt += PAWN_PSQT[idx] * (side == WHITE ? 1 : -1);
 		else if (pt == KNIGHT)
-			psqt += KNIGHT_PSQT[56 ^ i] * (side == WHITE ? 1 : -1);
+			psqt += KNIGHT_PSQT[idx] * (side == WHITE ? 1 : -1);
 		else if (pt == BISHOP)
-			psqt += BISHOP_PSQT[56 ^ i] * (side == WHITE ? 1 : -1);
+			psqt += BISHOP_PSQT[idx] * (side == WHITE ? 1 : -1);
 		else if (pt == ROOK)
-			psqt += ROOK_PSQT[56 ^ i] * (side == WHITE ? 1 : -1);
+			psqt += ROOK_PSQT[idx] * (side == WHITE ? 1 : -1);
 		else if (pt == QUEEN)
-			psqt += QUEEN_PSQT[56 ^ i] * (side == WHITE ? 1 : -1);
+			psqt += QUEEN_PSQT[idx] * (side == WHITE ? 1 : -1);
 		else if (pt == KING)
-			psqt += KING_PSQT[56 ^ i] * (side == WHITE ? 1 : -1);
+			psqt += KING_PSQT[idx] * (side == WHITE ? 1 : -1);
 	}
 
-	Value eval = material + psqt;
-	if (board.side == BLACK) eval = -eval;
+	EvalScore final_eval = material + psqt;
+	if (board.side == BLACK) final_eval *= -1;
 
-	return eval;
+	int phase = _mm_popcnt_u64(board.piece_boards[KNIGHT])
+			+ _mm_popcnt_u64(board.piece_boards[BISHOP])
+			+ 2 * _mm_popcnt_u64(board.piece_boards[ROOK])
+			+ 4 * _mm_popcnt_u64(board.piece_boards[QUEEN]);
+	phase = std::min(phase, 24);
+
+	return final_eval(phase);
+}
+
+std::vector<std::pair<double, double>> calc_grad(const Board &board) {
+	std::vector<std::pair<double, double>> grads;
+	
+	int phase = _mm_popcnt_u64(board.piece_boards[KNIGHT])
+			+ _mm_popcnt_u64(board.piece_boards[BISHOP])
+			+ 2 * _mm_popcnt_u64(board.piece_boards[ROOK])
+			+ 4 * _mm_popcnt_u64(board.piece_boards[QUEEN]);
+	phase = std::min(phase, 24);
+
+	double alpha = phase / 24.0, beta = 1 - alpha;
+	for (int i = 0; i < 6; i++) {
+		int diff = _mm_popcnt_u64(board.piece_boards[OCC(WHITE)] & board.piece_boards[i]) - _mm_popcnt_u64(board.piece_boards[OCC(BLACK)] & board.piece_boards[i]);
+		grads.push_back({diff * alpha, diff * beta});
+	}
+
+	std::vector<std::pair<double, double>> pawn_grads(64), knight_grads(64), bishop_grads(64), rook_grads(64), queen_grads(64), king_grads(64);
+
+	for (int i = 0; i < 64; i++) {
+		Piece p = board.mailbox[i];
+		PieceType pt = PieceType(p & 7);
+		int side = p >> 3;
+		int idx = side == WHITE ? i : 56 ^ i; // mirror for black pieces
+
+		double cur_alpha = alpha * (side == WHITE ? 1 : -1);
+		double cur_beta = beta * (side == WHITE ? 1 : -1);
+
+		if (pt != PAWN) pawn_grads[idx].first += 0, pawn_grads[idx].second += 0;
+		else pawn_grads[idx].first += cur_alpha, pawn_grads[idx].second += cur_beta;
+
+		if (pt != KNIGHT) knight_grads[idx].first += 0, knight_grads[idx].second += 0;
+		else knight_grads[idx].first += cur_alpha, knight_grads[idx].second += cur_beta;
+
+		if (pt != BISHOP) bishop_grads[idx].first += 0, bishop_grads[idx].second += 0;
+		else bishop_grads[idx].first += cur_alpha, bishop_grads[idx].second += cur_beta;
+
+		if (pt != ROOK) rook_grads[idx].first += 0, rook_grads[idx].second += 0;
+		else rook_grads[idx].first += cur_alpha, rook_grads[idx].second += cur_beta;
+
+		if (pt != QUEEN) queen_grads[idx].first += 0, queen_grads[idx].second += 0;
+		else queen_grads[idx].first += cur_alpha, queen_grads[idx].second += cur_beta;
+
+		if (pt != KING) king_grads[idx].first += 0, king_grads[idx].second += 0;
+		else king_grads[idx].first += cur_alpha, king_grads[idx].second += cur_beta;
+	}
+
+	grads.insert(grads.end(), pawn_grads.begin(), pawn_grads.end());
+	grads.insert(grads.end(), knight_grads.begin(), knight_grads.end());
+	grads.insert(grads.end(), bishop_grads.begin(), bishop_grads.end());
+	grads.insert(grads.end(), rook_grads.begin(), rook_grads.end());
+	grads.insert(grads.end(), queen_grads.begin(), queen_grads.end());
+	grads.insert(grads.end(), king_grads.begin(), king_grads.end());
+
+	if (board.side == BLACK) {
+		for (auto &g : grads) {
+			g.first *= -1;
+			g.second *= -1;
+		}
+	}
+
+	return grads;
 }
