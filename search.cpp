@@ -45,8 +45,20 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 
 	pzstd::vector<Move> moves;
 	board.legal_moves(moves);
+	
+	pzstd::vector<std::pair<Move, Value>> scored_moves;
+	for (const auto &move : moves) {
+		Value score = 0;
+		if (board.is_capture(move)) {
+			score += MVV[board.mailbox[move.dst()] & 7] - PieceValue[board.mailbox[move.src()] & 7];
+		}
+		scored_moves.push_back({move, score});
+	}
+	std::stable_sort(scored_moves.begin(), scored_moves.end(), [](const auto &a, const auto &b) {
+		return a.second > b.second;
+	});
 
-	for (auto &move : moves) {
+	for (auto &[move, val] : scored_moves) {
 		board.make_move(move);
 		Value score = -negamax(ti, depth - 1, ply + 1, -beta, -alpha);
 		board.unmake_move();
