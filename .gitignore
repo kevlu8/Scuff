@@ -1,0 +1,6 @@
+a.out
+hcechessbot
+*.o
+*.d
+*-base
+*-dev
