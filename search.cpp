@@ -7,7 +7,7 @@ int max_depth, max_nodes;
 bool output = true;
 int num_threads = 1;
 
-Value negamax(ThreadInfo &ti, int depth, Value alpha, Value beta, bool root=false) {
+Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	nodes[ti.id]++;
 
 	if (nodes[ti.id] >= max_nodes) {
@@ -24,6 +24,19 @@ Value negamax(ThreadInfo &ti, int depth, Value alpha, Value beta, bool root=fals
 
 	Board &board = ti.board;
 
+	bool in_check = false, opp_in_check = false;
+	if (board.control(__tzcnt_u64(board.piece_boards[OCC(board.side)] & board.piece_boards[KING]), !board.side)) {
+		in_check = true;
+	}
+
+	if (board.control(__tzcnt_u64(board.piece_boards[OPPOCC(board.side)] & board.piece_boards[KING]), board.side)) {
+		return VALUE_INFINITE;
+	}
+
+	if (board.threefold(ply) || board.halfmove >= 100 || board.insufficient_material()) {
+		return 0;
+	}
+
 	if (depth <= 0) {
 		return eval(board);
 	}
@@ -35,15 +48,20 @@ Value negamax(ThreadInfo &ti, int depth, Value alpha, Value beta, bool root=fals
 
 	for (auto &move : moves) {
 		board.make_move(move);
-		Value score = -negamax(ti, depth - 1, -beta, -alpha);
+		Value score = -negamax(ti, depth - 1, ply + 1, -beta, -alpha);
 		board.unmake_move();
 
 		if (stop_search) return 0;
 
 		if (score > best) {
 			best = score;
-			if (root) ti.best_move = move;
+			if (ply == 0) ti.best_move = move;
 		}
+	}
+
+	if (best == -VALUE_INFINITE) {
+		if (in_check) return -VALUE_MATE + ply;
+		else return 0;
 	}
 
 	return best;
@@ -51,7 +69,7 @@ Value negamax(ThreadInfo &ti, int depth, Value alpha, Value beta, bool root=fals
 
 void iterativedeepening(ThreadInfo &ti) {
 	for (int d = 1; d <= max_depth; d++) {
-		Value score = negamax(ti, d, -VALUE_INFINITE, VALUE_INFINITE, true);
+		Value score = negamax(ti, d, 0, -VALUE_INFINITE, VALUE_INFINITE);
 		if (stop_search) break;
 		if (ti.id == 0 && output) {
 			uint64_t tot_nodes = 0;
@@ -79,7 +97,6 @@ void search(ThreadInfo *tis, uint64_t time, int depth, uint64_t nodes, bool quie
 	for (int i = 0; i < num_threads; i++) ::nodes[i] = 0;
 
 	for (int i = 0; i < num_threads; i++) {
-		tis[i].id = i;
 		threads.emplace_back(iterativedeepening, std::ref(tis[i]));
 	}
 

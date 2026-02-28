@@ -145,6 +145,12 @@ void run_uci() {
 			}
 			int timeleft = board.side ? btime : wtime;
 			int inc = board.side ? binc : winc;
+
+			for (int i = 0; i < num_threads; i++) {
+				tis[i].board = board;
+				tis[i].id = i;
+			}
+
 			searchthread = std::thread(
 				[=, &board]() {
 					if (!quiet) std::cout << "info string Starting search..." << std::endl;

@@ -4,3 +4,4 @@ hcechessbot
 *.d
 *-base
 *-dev
+*.json
