@@ -37,6 +37,7 @@ void init_params() {
 	for (auto &s : BISHOP_MOB) params.push_back(&s);
 	for (auto &s : ROOK_MOB) params.push_back(&s);
 	for (auto &s : KING_MOB) params.push_back(&s);
+	for (auto &s : ISO_PAWN) params.push_back(&s);
 
 	// init adam stuff too
 	for (auto &p : params) {
@@ -105,6 +106,11 @@ void dump_params() {
 	outfile << "};\n\nEvalScore KING_MOB[] = {" << std::endl;
 	for (int i = 0; i < sizeof(KING_MOB) / sizeof(EvalScore); i++) {
 		outfile << "	ES(" << KING_MOB[i].mg << ", " << KING_MOB[i].eg << "),\n";
+	}
+	outfile << "};\n\nEvalScore ISO_PAWN[] = {" << std::endl;
+	for (int i = 0; i < sizeof(ISO_PAWN) / sizeof(EvalScore); i++) {
+		outfile << "	ES(" << ISO_PAWN[i].mg << ", " << ISO_PAWN[i].eg << "), ";
+		if ((i + 1) % 8 == 0) outfile << std::endl;
 	}
 	outfile << "};\n";
 	outfile.close();

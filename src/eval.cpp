@@ -169,6 +169,10 @@ EvalScore KING_MOB[] = {
 	ES(64, -28),
 };
 
+EvalScore ISO_PAWN[] = {
+	ES(-10, -10), ES(-10, -10), ES(-10, -10), ES(-10, -10), ES(-10, -10), ES(-10, -10), ES(-10, -10), ES(-10, -10)
+};
+
 int white_eval(const Board &board) {
 	EvalScore material = 0;
 
@@ -219,7 +223,27 @@ int white_eval(const Board &board) {
 	int b_king_mob = _mm_popcnt_u64(board.controlled_squares[OCC(BLACK)] & board.controlled_squares[KING]);
 	mobility += KING_MOB[std::min(w_king_mob, 7)] - KING_MOB[std::min(b_king_mob, 7)];
 
-	EvalScore final_eval = material + psqt + bishop_pair + mobility;
+	EvalScore iso_pawn = 0;
+	Bitboard mask = FileABits;
+	for (int f = 0; f < 8; f++) {
+		if (board.piece_boards[OCC(WHITE)] & board.piece_boards[PAWN] & mask) {
+			bool left_isolated = f > 0 && !(board.piece_boards[OCC(WHITE)] & board.piece_boards[PAWN] & (mask >> 1));
+			bool right_isolated = f < 7 && !(board.piece_boards[OCC(WHITE)] & board.piece_boards[PAWN] & (mask << 1));
+			if ((f == 0 || left_isolated) && (f == 7 || right_isolated))
+				iso_pawn += ISO_PAWN[f];
+		}
+
+		if (board.piece_boards[OCC(BLACK)] & board.piece_boards[PAWN] & mask) {
+			bool left_isolated = f > 0 && !(board.piece_boards[OCC(BLACK)] & board.piece_boards[PAWN] & (mask >> 1));
+			bool right_isolated = f < 7 && !(board.piece_boards[OCC(BLACK)] & board.piece_boards[PAWN] & (mask << 1));
+			if ((f == 0 || left_isolated) && (f == 7 || right_isolated))
+				iso_pawn -= ISO_PAWN[f];
+		}
+
+		mask <<= 1;
+	}
+
+	EvalScore final_eval = material + psqt + bishop_pair + mobility + iso_pawn;
 
 	int phase = _mm_popcnt_u64(board.piece_boards[KNIGHT])
 			+ _mm_popcnt_u64(board.piece_boards[BISHOP])
@@ -307,6 +331,27 @@ std::vector<std::pair<double, double>> calc_grad(const Board &board) {
 	grads.insert(grads.end(), bishop_mob_grads.begin(), bishop_mob_grads.end());
 	grads.insert(grads.end(), rook_mob_grads.begin(), rook_mob_grads.end());
 	grads.insert(grads.end(), king_mob_grads.begin(), king_mob_grads.end());
+
+	std::vector<std::pair<double, double>> iso_pawn_grads(8);
+	Bitboard mask = FileABits;
+	for (int f = 0; f < 8; f++) {
+		if (board.piece_boards[OCC(WHITE)] & board.piece_boards[PAWN] & mask) {
+			bool left_isolated = f > 0 && !(board.piece_boards[OCC(WHITE)] & board.piece_boards[PAWN] & (mask >> 1));
+			bool right_isolated = f < 7 && !(board.piece_boards[OCC(WHITE)] & board.piece_boards[PAWN] & (mask << 1));
+			if ((f == 0 || left_isolated) && (f == 7 || right_isolated))
+				iso_pawn_grads[f] = {iso_pawn_grads[f].first + alpha, iso_pawn_grads[f].second + beta};
+		}
+
+		if (board.piece_boards[OCC(BLACK)] & board.piece_boards[PAWN] & mask) {
+			bool left_isolated = f > 0 && !(board.piece_boards[OCC(BLACK)] & board.piece_boards[PAWN] & (mask >> 1));
+			bool right_isolated = f < 7 && !(board.piece_boards[OCC(BLACK)] & board.piece_boards[PAWN] & (mask << 1));
+			if ((f == 0 || left_isolated) && (f == 7 || right_isolated))
+				iso_pawn_grads[f] = {iso_pawn_grads[f].first - alpha, iso_pawn_grads[f].second - beta};
+		}
+
+		mask <<= 1;
+	}
+	grads.insert(grads.end(), iso_pawn_grads.begin(), iso_pawn_grads.end());
 
 	return grads;
 }
