@@ -171,6 +171,11 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	pzstd::vector<Move> quiets;
 
 	for (auto &[move, val] : scored_moves) {
+		if (best > -VALUE_MATE_MAX_PLY && ply != 0) {
+			if (movecount >= 5 + 2 * depth * depth)
+				break;
+		}
+
 		board.make_move(move);
 		
 		Value score = -VALUE_INFINITE;
