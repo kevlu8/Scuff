@@ -247,6 +247,7 @@ void iterativedeepening(ThreadInfo &ti) {
 			}
 		}
 	}
+	stop_search = true; // if it somehow didn't get set before
 }
 
 void search(ThreadInfo *tis, uint64_t time, int depth, uint64_t nodes, bool quiet) {
@@ -274,4 +275,5 @@ void search(ThreadInfo *tis, uint64_t time, int depth, uint64_t nodes, bool quie
 
 void clear_search_vars(ThreadInfo &ti) {
 	ti.best_move = NullMove;
+	ti.thread_hist = History();
 }
