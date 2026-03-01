@@ -101,6 +101,17 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 		return quiesce(ti, ply, alpha, beta);
 	}
 
+	auto tt_entry = ttable.probe(board.zobrist);
+	if (tt_entry && tt_entry->depth >= depth) {
+		if (tt_entry->flags == TTFlags::EXACT) {
+			return tt_entry->score;
+		} else if (tt_entry->flags == TTFlags::LOWERBOUND) {
+			if (tt_entry->score >= beta) return tt_entry->score;
+		} else if (tt_entry->flags == TTFlags::UPPERBOUND) {
+			if (tt_entry->score <= alpha) return tt_entry->score;
+		}
+	}
+
 	Value cur_eval = -VALUE_INFINITE;
 	if (!in_check) {
 		cur_eval = eval(board);
@@ -114,8 +125,6 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 		if (cur_eval >= margin)
 			return cur_eval;
 	}
-
-	auto tt_entry = ttable.probe(board.zobrist);
 
 	Value best = -VALUE_INFINITE;
 	Move best_move = NullMove;
