@@ -66,6 +66,7 @@ Value quiesce(ThreadInfo &ti, int ply, Value alpha, Value beta) {
 	return stand_pat;
 }
 
+template <bool pv>
 Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	nodes[ti.id]++;
 
@@ -125,10 +126,23 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	});
 
 	TTFlags flag = TTFlags::UPPERBOUND; // assume upperbound until we can prove otherwise
+	
+	int movecount = 1;
 
 	for (auto &[move, val] : scored_moves) {
 		board.make_move(move);
-		Value score = -negamax(ti, depth - 1, ply + 1, -beta, -alpha);
+		
+		Value score = -VALUE_INFINITE;
+
+		if (movecount == 1) {
+			score = -negamax<true>(ti, depth - 1, ply + 1, -beta, -alpha);
+		} else {
+			score = -negamax<false>(ti, depth - 1, ply + 1, -alpha - 1, -alpha);
+			if (score > alpha && score < beta) {
+				score = -negamax<true>(ti, depth - 1, ply + 1, -beta, -alpha);
+			}
+		}
+
 		board.unmake_move();
 
 		if (stop_search) return 0;
@@ -149,6 +163,8 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 			ti.thread_hist.update_history(board, move, depth * depth);
 			break;
 		}
+		
+		movecount++;
 	}
 
 	if (best == -VALUE_INFINITE) {
@@ -163,7 +179,7 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 
 void iterativedeepening(ThreadInfo &ti) {
 	for (int d = 1; d <= max_depth; d++) {
-		Value score = negamax(ti, d, 0, -VALUE_INFINITE, VALUE_INFINITE);
+		Value score = negamax<true>(ti, d, 0, -VALUE_INFINITE, VALUE_INFINITE);
 		if (stop_search) break;
 		if (ti.id == 0 && output) {
 			uint64_t tot_nodes = 0;
