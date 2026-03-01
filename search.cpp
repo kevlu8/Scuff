@@ -7,6 +7,65 @@ int max_depth, max_nodes;
 bool output = true;
 int num_threads = 1;
 
+Value quiesce(ThreadInfo &ti, int ply, Value alpha, Value beta) {
+	nodes[ti.id]++;
+
+	if (nodes[ti.id] >= max_nodes) {
+		stop_search = true;
+		return 0;
+	}
+
+	if ((nodes[ti.id] & 4095) == 0) {
+		if (std::chrono::steady_clock::now() >= end_time) {
+			stop_search = true;
+			return 0;
+		}
+	}
+
+	Board &board = ti.board;
+
+	Value stand_pat = eval(board);
+	if (stand_pat >= beta) return stand_pat;
+	if (stand_pat > alpha) alpha = stand_pat;
+
+	pzstd::vector<Move> moves;
+	board.captures(moves);
+	
+	pzstd::vector<std::pair<Move, int>> scored_moves;
+	for (const auto &move : moves) {
+		int score = 0;
+		if (board.is_capture(move)) {
+			score = 1000000 + MVV[board.mailbox[move.dst()] & 7] - PieceValue[board.mailbox[move.src()] & 7];
+		}
+		scored_moves.push_back({move, score});
+	}
+	std::stable_sort(scored_moves.begin(), scored_moves.end(), [](const auto &a, const auto &b) {
+		return a.second > b.second;
+	});
+
+	for (const auto &[move, val] : scored_moves) {
+		board.make_move(move);
+		Value score = -quiesce(ti, ply + 1, -beta, -alpha);
+		board.unmake_move();
+
+		if (stop_search) return 0;
+
+		if (score > stand_pat) {
+			stand_pat = score;
+		}
+
+		if (score > alpha) {
+			alpha = score;
+		}
+
+		if (score >= beta) {
+			return score;
+		}
+	}
+
+	return stand_pat;
+}
+
 Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	nodes[ti.id]++;
 
@@ -38,7 +97,7 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	}
 
 	if (depth <= 0) {
-		return eval(board);
+		return quiesce(ti, ply, alpha, beta);
 	}
 
 	Value best = -VALUE_INFINITE;

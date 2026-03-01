@@ -145,9 +145,9 @@ void run_uci() {
 			searchthread = std::thread(
 				[=, &board]() {
 					if (!quiet) std::cout << "info string Starting search..." << std::endl;
-					if (inf) search(tis, 1e18, MAX_PLY, 1e18, quiet);
-					else if (depth != -1) search(tis, 1e18, depth, 1e18, quiet);
-					else if (nodes != -1) search(tis, 1e18, MAX_PLY, nodes, quiet);
+					if (inf) search(tis, 1e9, MAX_PLY, 1e18, quiet);
+					else if (depth != -1) search(tis, 1e9, depth, 1e18, quiet);
+					else if (nodes != -1) search(tis, 1e9, MAX_PLY, nodes, quiet);
 					else if (movetime != -1) search(tis, movetime, MAX_PLY, 1e18, quiet);
 					else search(tis, timemgmt(timeleft, inc), MAX_PLY, 1e18, quiet);
 				}
