@@ -156,9 +156,15 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	Move move = NullMove;
 
 	while ((move = mp.next_move()) != NullMove) {
+		bool capt = board.is_capture(move);
+		int hist = capt ? 0 : ti.thread_hist.history[board.side][move.src()][move.dst()];
+
 		if (best > -VALUE_MATE_MAX_PLY && ply != 0) {
 			if (movecount >= 5 + 2 * depth * depth)
 				break;
+
+			if (depth <= 5 && !capt && hist < -2000 * depth)
+				continue;
 		}
 
 		int newdepth = depth - 1;
