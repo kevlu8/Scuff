@@ -163,6 +163,15 @@ void iterativedeepening(ThreadInfo &ti) {
 			std::cout << "info depth " << d << " score cp " << score << " nodes " << tot_nodes;
 			std::cout << " nps " << int(tot_nodes / ((double)elapsed / 1000)) << " pv " << ti.best_move.to_string() << std::endl;
 		}
+
+		if (ti.id == 0) {
+			auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_time).count();
+			auto tot_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
+			if (elapsed >= tot_time * 0.6) {
+				stop_search = true;
+				break;
+			}
+		}
 	}
 }
 
