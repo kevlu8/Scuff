@@ -11,12 +11,17 @@ extern bool stop_search;
 extern uint64_t nodes[MAX_THREADS];
 extern int num_threads;
 
+struct SSEntry {
+	Move excluded = NullMove;
+};
+
 struct ThreadInfo {
 	Board board;
 	Move best_move;
 	int id;
 
 	History thread_hist;
+	SSEntry ss[MAX_PLY];
 };
 
 void search(ThreadInfo *tis, uint64_t time, int depth, uint64_t nodes, bool quiet);

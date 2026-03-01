@@ -85,6 +85,7 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	}
 
 	Board &board = ti.board;
+	bool excluded = ti.ss[ply].excluded != NullMove;
 
 	bool in_check = false, opp_in_check = false;
 	if (board.control(__tzcnt_u64(board.piece_boards[OCC(board.side)] & board.piece_boards[KING]), !board.side)) {
@@ -119,7 +120,7 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 		cur_eval = eval(board);
 	}
 
-	if (!pv && !in_check && depth <= 10) {
+	if (!pv && !in_check && depth <= 10 && !excluded) {
 		/**
 		 * Reverse futility pruning
 		 */
@@ -128,7 +129,7 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 			return cur_eval;
 	}
 
-	if (!pv && !in_check && depth >= 2) {
+	if (!pv && !in_check && depth >= 2 && !excluded) {
 		/**
 		 * Null move pruning
 		 */
@@ -156,12 +157,27 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	Move move = NullMove;
 
 	while ((move = mp.next_move()) != NullMove) {
+		if (move == ti.ss[ply].excluded) continue;
+
 		if (best > -VALUE_MATE_MAX_PLY && ply != 0) {
 			if (movecount >= 5 + 2 * depth * depth)
 				break;
 		}
 
-		int newdepth = depth - 1;
+		int extension = 0;
+
+		if (!excluded && depth >= 7 && tt_entry && tt_entry->move == move && tt_entry->depth >= depth - 3 && tt_entry->flags != UPPERBOUND) {
+			// Singular extensions
+			ti.ss[ply].excluded = move;
+			Value singular_beta = tt_entry->score - 3 * depth;
+			Value s_score = negamax<false>(ti, (depth - 1) / 2, ply + 1, singular_beta - 1, singular_beta);
+			ti.ss[ply].excluded = NullMove;
+			if (s_score < singular_beta) {
+				extension++;
+			}
+		}
+
+		int newdepth = depth - 1 + extension;
 
 		board.make_move(move);
 
