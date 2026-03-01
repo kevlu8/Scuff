@@ -145,24 +145,7 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	Value best = -VALUE_INFINITE;
 	Move best_move = NullMove;
 
-	pzstd::vector<Move> moves;
-	board.legal_moves(moves);
-	
-	pzstd::vector<std::pair<Move, int>> scored_moves;
-	for (const auto &move : moves) {
-		int score = 0;
-		if (tt_entry && tt_entry->move == move) {
-			score = 10000000; // ensure best move from ttable is searched first
-		} else if (board.is_capture(move)) {
-			score = 100000 + MVV[board.mailbox[move.dst()] & 7] - PieceValue[board.mailbox[move.src()] & 7];
-		} else {
-			score = ti.thread_hist.history[board.side][move.src()][move.dst()];
-		}
-		scored_moves.push_back({move, score});
-	}
-	std::stable_sort(scored_moves.begin(), scored_moves.end(), [](const auto &a, const auto &b) {
-		return a.second > b.second;
-	});
+	MovePicker mp(board, tt_entry ? tt_entry->move : NullMove, ti.thread_hist);
 
 	TTFlags flag = TTFlags::UPPERBOUND; // assume upperbound until we can prove otherwise
 	
@@ -170,7 +153,9 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 
 	pzstd::vector<Move> quiets;
 
-	for (auto &[move, val] : scored_moves) {
+	Move move = NullMove;
+
+	while ((move = mp.next_move()) != NullMove) {
 		if (best > -VALUE_MATE_MAX_PLY && ply != 0) {
 			if (movecount >= 5 + 2 * depth * depth)
 				break;

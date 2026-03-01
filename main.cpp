@@ -217,7 +217,7 @@ __attribute__((weak)) int main(int argc, char *argv[]) {
 		for (const auto &fen : bench_positions) {
 			tis[0].board.reset(fen);
 			clear_search_vars(tis[0]);
-			search(tis, 1e9, 6, 1e18, 0);
+			search(tis, 1e9, 8, 1e18, 0);
 			tot_nodes += nodes[0];
 		}
 		uint64_t end = clock();
