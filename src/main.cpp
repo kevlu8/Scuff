@@ -26,7 +26,7 @@ void run_uci() {
 	Board board = Board();
 	while (getline(std::cin, command)) {
 		if (command == "uci") {
-			std::cout << "id name HCEChessBot " << VERSION << std::endl;
+			std::cout << "id name Scuff " << VERSION << std::endl;
 			std::cout << "id author kevlu8 and wdotmathree" << std::endl;
 			std::cout << "option name Hash type spin default 16 min 1 max " << MAX_TT << std::endl;
 			std::cout << "option name Threads type spin default 1 min 1 max " << MAX_THREADS << std::endl;
@@ -246,6 +246,6 @@ __attribute__((weak)) int main(int argc, char *argv[]) {
 		std::cout << "info string Average eval over " << npositions << " positions: " << (tot_eval / npositions) << std::endl;
 		return 0;
 	}
-	std::cout << "HCEChessBot " << VERSION << " developed by kevlu8 and wdotmathree" << std::endl;
+	std::cout << "Scuff " << VERSION << " developed by kevlu8 and wdotmathree" << std::endl;
 	run_uci();
 }
