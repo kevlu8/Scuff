@@ -93,7 +93,7 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 		return VALUE_INFINITE;
 	}
 
-	if (board.threefold(ply) || board.halfmove >= 100 || board.insufficient_material()) {
+	if (ply > 0 && (board.threefold(ply) || board.halfmove >= 100 || board.insufficient_material())) {
 		return 0;
 	}
 
@@ -102,7 +102,7 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	}
 
 	auto tt_entry = ttable.probe(board.zobrist);
-	if (tt_entry && tt_entry->depth >= depth) {
+	if (!pv && tt_entry && tt_entry->depth >= depth) {
 		if (tt_entry->flags == TTFlags::EXACT) {
 			return tt_entry->score;
 		} else if (tt_entry->flags == TTFlags::LOWERBOUND) {
