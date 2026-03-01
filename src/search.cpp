@@ -224,8 +224,22 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 }
 
 void iterativedeepening(ThreadInfo &ti) {
+	Value score = -VALUE_INFINITE;
 	for (int d = 1; d <= max_depth; d++) {
-		Value score = negamax<true>(ti, d, 0, -VALUE_INFINITE, VALUE_INFINITE);
+		Value alpha = -VALUE_INFINITE, beta = VALUE_INFINITE;
+		if (d >= 4) {
+			alpha = score - 50;
+			beta = score + 50;
+		}
+
+		score = negamax<true>(ti, d, 0, alpha, beta);
+
+		if (score <= alpha || score >= beta) {
+			if (stop_search) break;
+			alpha = -VALUE_INFINITE, beta = VALUE_INFINITE;
+			score = negamax<true>(ti, d, 0, alpha, beta);
+		}
+
 		if (stop_search) break;
 		if (ti.id == 0 && output) {
 			uint64_t tot_nodes = 0;
