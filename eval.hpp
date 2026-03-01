@@ -12,6 +12,10 @@ extern EvalScore ROOK_PSQT[64];
 extern EvalScore QUEEN_PSQT[64];
 extern EvalScore KING_PSQT[64];
 extern EvalScore BISHOP_PAIR;
+extern EvalScore KNIGHT_MOB[9];
+extern EvalScore BISHOP_MOB[32];
+extern EvalScore ROOK_MOB[32];
+extern EvalScore KING_MOB[8];
 
 int white_eval(const Board &board);
 
