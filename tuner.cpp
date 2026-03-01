@@ -33,6 +33,10 @@ void init_params() {
 	for (auto &s : QUEEN_PSQT) params.push_back(&s);
 	for (auto &s : KING_PSQT) params.push_back(&s);
 	params.push_back(&BISHOP_PAIR);
+	for (auto &s : KNIGHT_MOB) params.push_back(&s);
+	for (auto &s : BISHOP_MOB) params.push_back(&s);
+	for (auto &s : ROOK_MOB) params.push_back(&s);
+	for (auto &s : KING_MOB) params.push_back(&s);
 
 	// init adam stuff too
 	for (auto &p : params) {
@@ -85,8 +89,24 @@ void dump_params() {
 		outfile << "	ES(" << KING_PSQT[i].mg << ", " << KING_PSQT[i].eg << "), ";
 		if ((i + 1) % 8 == 0) outfile << std::endl;
 	}
+	outfile << "};\n\nEvalScore BISHOP_PAIR = ES(" << BISHOP_PAIR.mg << ", " << BISHOP_PAIR.eg << ");\n";
+	outfile << "\nEvalScore KNIGHT_MOB[] = {" << std::endl;
+	for (int i = 0; i < sizeof(KNIGHT_MOB) / sizeof(EvalScore); i++) {
+		outfile << "	ES(" << KNIGHT_MOB[i].mg << ", " << KNIGHT_MOB[i].eg << "),\n";
+	}
+	outfile << "};\n\nEvalScore BISHOP_MOB[] = {" << std::endl;
+	for (int i = 0; i < sizeof(BISHOP_MOB) / sizeof(EvalScore); i++) {
+		outfile << "	ES(" << BISHOP_MOB[i].mg << ", " << BISHOP_MOB[i].eg << "),\n";
+	}
+	outfile << "};\n\nEvalScore ROOK_MOB[] = {" << std::endl;
+	for (int i = 0; i < sizeof(ROOK_MOB) / sizeof(EvalScore); i++) {
+		outfile << "	ES(" << ROOK_MOB[i].mg << ", " << ROOK_MOB[i].eg << "),\n";
+	}
+	outfile << "};\n\nEvalScore KING_MOB[] = {" << std::endl;
+	for (int i = 0; i < sizeof(KING_MOB) / sizeof(EvalScore); i++) {
+		outfile << "	ES(" << KING_MOB[i].mg << ", " << KING_MOB[i].eg << "),\n";
+	}
 	outfile << "};\n";
-	outfile << "\nEvalScore BISHOP_PAIR = ES(" << BISHOP_PAIR.mg << ", " << BISHOP_PAIR.eg << ");\n";
 	outfile.close();
 }
 
