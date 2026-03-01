@@ -15,8 +15,9 @@ Move MovePicker::next_move() {
 		for (const auto &move : mv) {
 			int score = 0;
 			if (board.is_capture(move)) {
-				bool good = board.see(move, -50);
-				score = MVV[board.mailbox[move.dst()] & 7] + history.get_capthist(board, move);
+				int capthist = history.get_capthist(board, move);
+				bool good = board.see(move, -capthist / 50);
+				score = MVV[board.mailbox[move.dst()] & 7] + capthist;
 				if (good) good_noisies.push_back({move, score});
 				else bad_noisies.push_back({move, score});
 			} else {
