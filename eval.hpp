@@ -12,5 +12,8 @@ extern EvalScore ROOK_PSQT[64];
 extern EvalScore QUEEN_PSQT[64];
 extern EvalScore KING_PSQT[64];
 
-Value eval(const Board &board);
+int white_eval(const Board &board);
+
+int eval(const Board &board);
+
 std::vector<std::pair<double, double>> calc_grad(const Board &board);
