@@ -11,6 +11,7 @@ extern EvalScore BISHOP_PSQT[64];
 extern EvalScore ROOK_PSQT[64];
 extern EvalScore QUEEN_PSQT[64];
 extern EvalScore KING_PSQT[64];
+extern EvalScore BISHOP_PAIR;
 
 int white_eval(const Board &board);
 

@@ -32,6 +32,7 @@ void init_params() {
 	for (auto &s : ROOK_PSQT) params.push_back(&s);
 	for (auto &s : QUEEN_PSQT) params.push_back(&s);
 	for (auto &s : KING_PSQT) params.push_back(&s);
+	params.push_back(&BISHOP_PAIR);
 
 	// init adam stuff too
 	for (auto &p : params) {
@@ -85,6 +86,7 @@ void dump_params() {
 		if ((i + 1) % 8 == 0) outfile << std::endl;
 	}
 	outfile << "};\n";
+	outfile << "\nEvalScore BISHOP_PAIR = ES(" << BISHOP_PAIR.mg << ", " << BISHOP_PAIR.eg << ");\n";
 	outfile.close();
 }
 
