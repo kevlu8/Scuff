@@ -117,6 +117,8 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	Value cur_eval = -VALUE_INFINITE;
 	if (!in_check) {
 		cur_eval = eval(board);
+		Value correction = ti.thread_hist.get_correction(board);
+		cur_eval += correction;
 	}
 
 	if (!pv && !in_check && depth <= 10) {
@@ -215,6 +217,14 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	if (best == -VALUE_INFINITE) {
 		if (in_check) return -VALUE_MATE + ply;
 		else return 0;
+	}
+
+	bool best_iscapt = board.is_capture(best_move);
+	bool best_ispromo = best_move.type() == PROMOTION;
+	if (!in_check && !(best_move != NullMove && (best_iscapt || best_ispromo))
+	&& !(flag == TTFlags::UPPERBOUND && best >= cur_eval) && !(flag == TTFlags::LOWERBOUND && best <= cur_eval)) {
+		int bonus = (best - cur_eval) * depth / 8;
+		ti.thread_hist.update_corrhist(board, bonus);
 	}
 
 	Move tt_move = best_move != NullMove ? best_move : (tt_entry ? tt_entry->move : NullMove);
