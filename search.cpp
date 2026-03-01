@@ -153,8 +153,9 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 
 	pzstd::vector<Move> quiets;
 
-<<<<<<< HEAD
-	for (auto &[move, val] : scored_moves) {
+	Move move = NullMove;
+
+	while ((move = mp.next_move()) != NullMove) {
 		if (best > -VALUE_MATE_MAX_PLY && ply != 0) {
 			if (movecount >= 5 + 2 * depth * depth)
 				break;
@@ -162,11 +163,6 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 
 		int newdepth = depth - 1;
 
-=======
-	Move move = NullMove;
-
-	while ((move = mp.next_move()) != NullMove) {
->>>>>>> 3cbec81 (Use movepicker)
 		board.make_move(move);
 
 		Value score = -VALUE_INFINITE;
