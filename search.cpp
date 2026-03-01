@@ -176,17 +176,25 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 				break;
 		}
 
+		int newdepth = depth - 1;
+
 		board.make_move(move);
-		
+
 		Value score = -VALUE_INFINITE;
 
-		if (movecount == 1) {
-			score = -negamax<true>(ti, depth - 1, ply + 1, -beta, -alpha);
-		} else {
-			score = -negamax<false>(ti, depth - 1, ply + 1, -alpha - 1, -alpha);
-			if (score > alpha && score < beta) {
-				score = -negamax<true>(ti, depth - 1, ply + 1, -beta, -alpha);
+		if (depth >= 3 && movecount >= 4) {
+			int r = 1;
+
+			int search_depth = newdepth - r;
+			score = -negamax<false>(ti, search_depth, ply + 1, -alpha - 1, -alpha);
+			if (score > alpha && search_depth < newdepth) {
+				score = -negamax<false>(ti, newdepth, ply + 1, -alpha - 1, -alpha);
 			}
+		} else if (!pv || movecount > 1) {
+			score = -negamax<false>(ti, newdepth, ply + 1, -alpha - 1, -alpha);
+		}
+		if (pv && (movecount == 1 || score > alpha)) {
+			score = -negamax<true>(ti, newdepth, ply + 1, -beta, -alpha);
 		}
 
 		board.unmake_move();
