@@ -153,11 +153,13 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	
 	int movecount = 1;
 
-	pzstd::vector<Move> quiets;
+	pzstd::vector<Move> quiets, captures;
 
 	Move move = NullMove;
 
 	while ((move = mp.next_move()) != NullMove) {
+		bool capt = board.is_capture(move);
+
 		if (best > -VALUE_MATE_MAX_PLY && ply != 0) {
 			if (movecount >= 5 + 2 * depth * depth)
 				break;
@@ -202,14 +204,22 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 		if (score >= beta) {
 			flag = TTFlags::LOWERBOUND;
 			int bonus = depth * depth;
-			ti.thread_hist.update_history(board, move, bonus);
-			for (auto &quiet : quiets) {
-				ti.thread_hist.update_history(board, quiet, -bonus);
+			if (!capt) {
+				ti.thread_hist.update_history(board, move, bonus);
+				for (auto &quiet : quiets) {
+					ti.thread_hist.update_history(board, quiet, -bonus);
+				}
+			} else {
+				ti.thread_hist.update_capthist(board, move, bonus);
+			}
+			for (auto &capt : captures) {
+				ti.thread_hist.update_capthist(board, capt, -bonus);
 			}
 			break;
 		}
 
-		quiets.push_back(move);
+		if (!capt) quiets.push_back(move);
+		else captures.push_back(move);
 		
 		movecount++;
 	}
