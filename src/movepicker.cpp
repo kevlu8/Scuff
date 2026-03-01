@@ -16,11 +16,11 @@ Move MovePicker::next_move() {
 			int score = 0;
 			if (board.is_capture(move)) {
 				bool good = board.see(move, -50);
-				score = MVV[board.mailbox[move.dst()] & 7] - PieceValue[board.mailbox[move.src()] & 7];
+				score = MVV[board.mailbox[move.dst()] & 7] + history.get_capthist(board, move);
 				if (good) good_noisies.push_back({move, score});
 				else bad_noisies.push_back({move, score});
 			} else {
-				score = history.history[board.side][move.src()][move.dst()];
+				score = history.get_history(board, move);
 				quiets.push_back({move, score});
 			}
 		}
