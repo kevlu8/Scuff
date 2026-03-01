@@ -24,7 +24,7 @@ Value quiesce(ThreadInfo &ti, int ply, Value alpha, Value beta) {
 
 	Board &board = ti.board;
 
-	Value stand_pat = eval(board);
+	Value stand_pat = eval(board) + ti.thread_hist.get_correction(board);
 	if (stand_pat >= beta) return stand_pat;
 	if (stand_pat > alpha) alpha = stand_pat;
 
