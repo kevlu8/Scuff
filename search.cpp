@@ -101,6 +101,20 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 		return quiesce(ti, ply, alpha, beta);
 	}
 
+	Value cur_eval = -VALUE_INFINITE;
+	if (!in_check) {
+		cur_eval = eval(board);
+	}
+
+	if (!pv && !in_check && depth <= 10) {
+		/**
+		 * Reverse futility pruning
+		 */
+		int margin = beta + 150 * depth;
+		if (cur_eval >= margin)
+			return cur_eval;
+	}
+
 	auto tt_entry = ttable.probe(board.zobrist);
 
 	Value best = -VALUE_INFINITE;
