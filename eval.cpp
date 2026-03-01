@@ -1,121 +1,121 @@
 #include "eval.hpp"
 
 EvalScore MATERIAL_VALUES[] = {
-	ES(213, 446),
-	ES(855, 1103),
-	ES(842, 1072),
-	ES(1166, 1826),
-	ES(2279, 3087),
+	ES(231, 449),
+	ES(887, 1125),
+	ES(802, 1072),
+	ES(1096, 1790),
+	ES(1921, 2941),
 };
 
 EvalScore PAWN_PSQT[] = {
 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 
-	ES(-86, 8), 	ES(-13, 23), 	ES(-14, -31), 	ES(-35, -3), 	ES(17, 11), 	ES(74, -31), 	ES(140, -30), 	ES(-19, -57), 
-	ES(-91, 0), 	ES(-10, 5), 	ES(-15, -53), 	ES(1, -19), 	ES(41, -35), 	ES(11, -53), 	ES(102, -28), 	ES(3, -62), 
-	ES(-92, 23), 	ES(-17, 18), 	ES(-6, -53), 	ES(42, -66), 	ES(48, -70), 	ES(27, -66), 	ES(49, -19), 	ES(-20, -46), 
-	ES(-68, 110), 	ES(10, 78), 	ES(9, 6), 	ES(27, -26), 	ES(92, -55), 	ES(78, -44), 	ES(77, 23), 	ES(11, 23), 
-	ES(-30, 363), 	ES(4, 392), 	ES(115, 274), 	ES(133, 203), 	ES(129, 180), 	ES(208, 120), 	ES(155, 282), 	ES(8, 271), 
-	ES(219, 577), 	ES(298, 541), 	ES(216, 555), 	ES(314, 377), 	ES(245, 369), 	ES(195, 412), 	ES(-40, 571), 	ES(-107, 613), 
+	ES(-72, 6), 	ES(-10, 20), 	ES(-30, -28), 	ES(-16, 8), 	ES(31, 17), 	ES(79, -39), 	ES(138, -31), 	ES(-20, -65), 
+	ES(-85, -5), 	ES(-22, 7), 	ES(-10, -55), 	ES(11, -18), 	ES(58, -40), 	ES(27, -51), 	ES(100, -28), 	ES(4, -60), 
+	ES(-101, 17), 	ES(-5, 18), 	ES(-5, -46), 	ES(49, -58), 	ES(63, -66), 	ES(38, -62), 	ES(44, -22), 	ES(-26, -46), 
+	ES(-84, 109), 	ES(12, 74), 	ES(14, 5), 	ES(31, -20), 	ES(90, -60), 	ES(57, -40), 	ES(85, 23), 	ES(2, 25), 
+	ES(-44, 370), 	ES(18, 401), 	ES(122, 286), 	ES(117, 205), 	ES(141, 179), 	ES(212, 125), 	ES(162, 285), 	ES(5, 268), 
+	ES(176, 592), 	ES(292, 561), 	ES(215, 569), 	ES(298, 389), 	ES(244, 372), 	ES(194, 428), 	ES(-41, 573), 	ES(-143, 623), 
 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 	ES(0, 0), 
 };
 
 EvalScore KNIGHT_PSQT[] = {
-	ES(-201, 9), 	ES(-11, -5), 	ES(-45, 79), 	ES(6, 91), 	ES(12, 94), 	ES(57, 49), 	ES(-2, 12), 	ES(-100, -40), 
-	ES(-49, 40), 	ES(-13, 96), 	ES(46, 125), 	ES(96, 139), 	ES(103, 136), 	ES(111, 124), 	ES(57, 68), 	ES(44, 76), 
-	ES(-8, 79), 	ES(54, 140), 	ES(112, 149), 	ES(122, 210), 	ES(166, 207), 	ES(124, 155), 	ES(130, 129), 	ES(41, 79), 
-	ES(37, 142), 	ES(84, 168), 	ES(126, 236), 	ES(142, 230), 	ES(166, 250), 	ES(153, 211), 	ES(149, 175), 	ES(79, 107), 
-	ES(74, 137), 	ES(98, 203), 	ES(170, 233), 	ES(237, 242), 	ES(170, 254), 	ES(246, 231), 	ES(129, 220), 	ES(182, 118), 
-	ES(69, 95), 	ES(154, 153), 	ES(194, 199), 	ES(218, 208), 	ES(343, 164), 	ES(365, 130), 	ES(228, 125), 	ES(154, 64), 
-	ES(27, 30), 	ES(78, 114), 	ES(145, 139), 	ES(175, 149), 	ES(127, 122), 	ES(343, 73), 	ES(73, 100), 	ES(159, -24), 
-	ES(-421, -139), 	ES(-327, 53), 	ES(-117, 112), 	ES(-12, 91), 	ES(101, 106), 	ES(-91, 13), 	ES(-246, 73), 	ES(-236, -227), 
+	ES(-218, 25), 	ES(-9, 49), 	ES(-50, 90), 	ES(-5, 100), 	ES(7, 108), 	ES(42, 63), 	ES(5, 63), 	ES(-106, -19), 
+	ES(-55, 75), 	ES(-30, 104), 	ES(27, 132), 	ES(101, 136), 	ES(96, 147), 	ES(96, 114), 	ES(41, 76), 	ES(37, 106), 
+	ES(-34, 83), 	ES(38, 143), 	ES(102, 153), 	ES(130, 209), 	ES(178, 203), 	ES(131, 143), 	ES(112, 118), 	ES(31, 93), 
+	ES(21, 146), 	ES(73, 167), 	ES(147, 230), 	ES(151, 225), 	ES(183, 242), 	ES(159, 208), 	ES(147, 171), 	ES(61, 108), 
+	ES(65, 142), 	ES(111, 200), 	ES(185, 226), 	ES(274, 232), 	ES(205, 237), 	ES(287, 224), 	ES(157, 199), 	ES(188, 109), 
+	ES(51, 101), 	ES(169, 146), 	ES(244, 197), 	ES(268, 192), 	ES(399, 137), 	ES(411, 127), 	ES(264, 110), 	ES(168, 63), 
+	ES(14, 69), 	ES(65, 117), 	ES(150, 142), 	ES(199, 141), 	ES(147, 117), 	ES(357, 63), 	ES(73, 103), 	ES(158, 8), 
+	ES(-433, -121), 	ES(-346, 91), 	ES(-147, 123), 	ES(-35, 99), 	ES(81, 110), 	ES(-112, 23), 	ES(-255, 110), 	ES(-258, -208), 
 };
 
 EvalScore BISHOP_PSQT[] = {
-	ES(44, 89), 	ES(133, 149), 	ES(63, 91), 	ES(32, 139), 	ES(61, 132), 	ES(44, 138), 	ES(133, 87), 	ES(93, 42), 
-	ES(114, 151), 	ES(101, 125), 	ES(142, 108), 	ES(68, 165), 	ES(95, 160), 	ES(143, 127), 	ES(163, 136), 	ES(121, 79), 
-	ES(79, 158), 	ES(104, 176), 	ES(102, 184), 	ES(124, 190), 	ES(115, 204), 	ES(114, 179), 	ES(107, 145), 	ES(134, 126), 
-	ES(54, 146), 	ES(57, 200), 	ES(88, 216), 	ES(152, 198), 	ES(152, 191), 	ES(85, 187), 	ES(84, 182), 	ES(88, 119), 
-	ES(64, 178), 	ES(107, 198), 	ES(141, 189), 	ES(182, 227), 	ES(165, 199), 	ES(169, 200), 	ES(99, 188), 	ES(71, 177), 
-	ES(85, 184), 	ES(150, 164), 	ES(144, 181), 	ES(180, 148), 	ES(151, 166), 	ES(278, 161), 	ES(224, 161), 	ES(179, 178), 
-	ES(54, 94), 	ES(119, 137), 	ES(81, 160), 	ES(43, 171), 	ES(104, 148), 	ES(126, 142), 	ES(99, 168), 	ES(110, 92), 
-	ES(7, 151), 	ES(-81, 190), 	ES(-52, 180), 	ES(-215, 221), 	ES(-156, 207), 	ES(-92, 171), 	ES(-6, 157), 	ES(-94, 134), 
+	ES(95, 139), 	ES(141, 172), 	ES(103, 144), 	ES(64, 159), 	ES(90, 164), 	ES(79, 184), 	ES(154, 118), 	ES(128, 95), 
+	ES(131, 177), 	ES(119, 139), 	ES(130, 106), 	ES(67, 160), 	ES(92, 148), 	ES(140, 126), 	ES(175, 164), 	ES(132, 121), 
+	ES(105, 180), 	ES(93, 171), 	ES(95, 164), 	ES(78, 161), 	ES(95, 173), 	ES(96, 162), 	ES(109, 145), 	ES(146, 140), 
+	ES(66, 171), 	ES(58, 183), 	ES(47, 184), 	ES(129, 156), 	ES(117, 167), 	ES(59, 167), 	ES(51, 176), 	ES(110, 138), 
+	ES(63, 184), 	ES(70, 187), 	ES(108, 157), 	ES(151, 188), 	ES(131, 149), 	ES(116, 177), 	ES(90, 171), 	ES(72, 187), 
+	ES(78, 208), 	ES(129, 160), 	ES(102, 164), 	ES(153, 121), 	ES(114, 142), 	ES(249, 140), 	ES(200, 149), 	ES(193, 194), 
+	ES(46, 133), 	ES(80, 147), 	ES(51, 153), 	ES(-3, 164), 	ES(98, 125), 	ES(73, 130), 	ES(76, 159), 	ES(81, 128), 
+	ES(-4, 186), 	ES(-85, 203), 	ES(-65, 193), 	ES(-215, 228), 	ES(-153, 216), 	ES(-98, 174), 	ES(-2, 169), 	ES(-90, 170), 
 };
 
 EvalScore ROOK_PSQT[] = {
-	ES(84, 305), 	ES(84, 321), 	ES(116, 347), 	ES(131, 342), 	ES(150, 311), 	ES(123, 314), 	ES(161, 291), 	ES(83, 276), 
-	ES(9, 310), 	ES(39, 319), 	ES(96, 325), 	ES(80, 328), 	ES(107, 310), 	ES(114, 293), 	ES(171, 269), 	ES(60, 273), 
-	ES(16, 345), 	ES(30, 334), 	ES(64, 328), 	ES(61, 350), 	ES(89, 336), 	ES(77, 308), 	ES(190, 259), 	ES(109, 253), 
-	ES(27, 357), 	ES(32, 374), 	ES(64, 378), 	ES(94, 372), 	ES(98, 360), 	ES(50, 365), 	ES(132, 314), 	ES(106, 304), 
-	ES(73, 389), 	ES(120, 377), 	ES(117, 406), 	ES(135, 403), 	ES(160, 355), 	ES(170, 340), 	ES(217, 326), 	ES(220, 309), 
-	ES(99, 384), 	ES(183, 395), 	ES(176, 405), 	ES(179, 399), 	ES(276, 347), 	ES(288, 330), 	ES(434, 304), 	ES(367, 282), 
-	ES(153, 392), 	ES(148, 431), 	ES(211, 449), 	ES(284, 416), 	ES(227, 415), 	ES(327, 372), 	ES(314, 346), 	ES(423, 299), 
-	ES(232, 369), 	ES(194, 401), 	ES(202, 435), 	ES(224, 420), 	ES(270, 392), 	ES(356, 362), 	ES(306, 364), 	ES(381, 343), 
+	ES(104, 338), 	ES(103, 326), 	ES(127, 343), 	ES(143, 340), 	ES(162, 307), 	ES(152, 315), 	ES(166, 283), 	ES(114, 292), 
+	ES(22, 322), 	ES(39, 338), 	ES(95, 331), 	ES(91, 345), 	ES(94, 305), 	ES(116, 291), 	ES(165, 264), 	ES(83, 282), 
+	ES(14, 342), 	ES(8, 343), 	ES(42, 336), 	ES(46, 342), 	ES(70, 326), 	ES(74, 296), 	ES(170, 243), 	ES(112, 251), 
+	ES(15, 360), 	ES(4, 372), 	ES(34, 385), 	ES(64, 376), 	ES(57, 354), 	ES(33, 351), 	ES(103, 312), 	ES(81, 304), 
+	ES(54, 386), 	ES(81, 377), 	ES(78, 411), 	ES(87, 389), 	ES(102, 349), 	ES(139, 326), 	ES(181, 312), 	ES(190, 296), 
+	ES(74, 379), 	ES(155, 391), 	ES(124, 390), 	ES(137, 384), 	ES(238, 344), 	ES(257, 317), 	ES(428, 291), 	ES(352, 275), 
+	ES(143, 386), 	ES(125, 425), 	ES(193, 436), 	ES(259, 400), 	ES(207, 401), 	ES(308, 365), 	ES(298, 335), 	ES(410, 297), 
+	ES(213, 364), 	ES(166, 405), 	ES(173, 434), 	ES(180, 412), 	ES(228, 389), 	ES(310, 356), 	ES(295, 357), 	ES(361, 343), 
 };
 
 EvalScore QUEEN_PSQT[] = {
-	ES(423, 884), 	ES(385, 918), 	ES(406, 902), 	ES(454, 926), 	ES(436, 896), 	ES(389, 902), 	ES(473, 811), 	ES(461, 801), 
-	ES(412, 914), 	ES(408, 908), 	ES(436, 906), 	ES(448, 931), 	ES(444, 932), 	ES(455, 856), 	ES(483, 763), 	ES(545, 699), 
-	ES(392, 934), 	ES(401, 986), 	ES(386, 1023), 	ES(391, 1027), 	ES(394, 1034), 	ES(415, 1012), 	ES(450, 974), 	ES(460, 963), 
-	ES(411, 965), 	ES(339, 1063), 	ES(341, 1083), 	ES(381, 1113), 	ES(372, 1108), 	ES(358, 1130), 	ES(417, 1085), 	ES(462, 1070), 
-	ES(377, 981), 	ES(370, 1041), 	ES(349, 1098), 	ES(329, 1162), 	ES(332, 1220), 	ES(399, 1190), 	ES(430, 1165), 	ES(477, 1109), 
-	ES(420, 965), 	ES(390, 1016), 	ES(347, 1146), 	ES(375, 1189), 	ES(402, 1237), 	ES(572, 1166), 	ES(609, 1049), 	ES(623, 1034), 
-	ES(415, 938), 	ES(295, 1074), 	ES(298, 1206), 	ES(272, 1263), 	ES(280, 1341), 	ES(425, 1201), 	ES(398, 1118), 	ES(596, 1045), 
-	ES(326, 1030), 	ES(267, 1115), 	ES(371, 1178), 	ES(469, 1125), 	ES(483, 1122), 	ES(523, 1094), 	ES(627, 923), 	ES(473, 1030), 
+	ES(392, 930), 	ES(382, 932), 	ES(408, 926), 	ES(436, 972), 	ES(427, 916), 	ES(385, 914), 	ES(464, 842), 	ES(461, 819), 
+	ES(413, 939), 	ES(400, 936), 	ES(429, 911), 	ES(445, 911), 	ES(432, 938), 	ES(468, 852), 	ES(481, 777), 	ES(552, 724), 
+	ES(374, 960), 	ES(389, 984), 	ES(380, 1020), 	ES(380, 989), 	ES(389, 1009), 	ES(408, 1012), 	ES(447, 979), 	ES(439, 971), 
+	ES(377, 993), 	ES(340, 1055), 	ES(344, 1047), 	ES(378, 1097), 	ES(373, 1083), 	ES(374, 1083), 	ES(403, 1068), 	ES(441, 1070), 
+	ES(365, 1013), 	ES(356, 1036), 	ES(351, 1074), 	ES(358, 1131), 	ES(354, 1177), 	ES(407, 1150), 	ES(430, 1136), 	ES(468, 1112), 
+	ES(414, 980), 	ES(383, 1012), 	ES(362, 1117), 	ES(397, 1146), 	ES(432, 1182), 	ES(580, 1126), 	ES(620, 1014), 	ES(630, 1033), 
+	ES(409, 968), 	ES(323, 1069), 	ES(329, 1182), 	ES(297, 1246), 	ES(315, 1302), 	ES(441, 1166), 	ES(413, 1105), 	ES(581, 1084), 
+	ES(351, 1035), 	ES(285, 1104), 	ES(345, 1165), 	ES(450, 1111), 	ES(464, 1112), 	ES(483, 1111), 	ES(633, 920), 	ES(474, 1039), 
 };
 
 EvalScore KING_PSQT[] = {
-	ES(307, -345), 	ES(286, -230), 	ES(200, -157), 	ES(-147, -102), 	ES(64, -180), 	ES(-65, -109), 	ES(208, -202), 	ES(337, -357), 
-	ES(220, -179), 	ES(55, -76), 	ES(16, -36), 	ES(-102, 7), 	ES(-110, 17), 	ES(-52, -23), 	ES(111, -77), 	ES(158, -142), 
-	ES(-76, -102), 	ES(-47, -22), 	ES(-247, 62), 	ES(-293, 94), 	ES(-277, 96), 	ES(-265, 63), 	ES(-105, 2), 	ES(-146, -48), 
-	ES(-220, -72), 	ES(-279, 45), 	ES(-387, 128), 	ES(-494, 182), 	ES(-486, 178), 	ES(-354, 136), 	ES(-368, 87), 	ES(-418, 34), 
-	ES(-236, -27), 	ES(-309, 96), 	ES(-355, 168), 	ES(-510, 204), 	ES(-474, 207), 	ES(-341, 184), 	ES(-339, 156), 	ES(-397, 63), 
-	ES(-341, 9), 	ES(11, 81), 	ES(-221, 151), 	ES(-306, 187), 	ES(-159, 187), 	ES(107, 154), 	ES(28, 152), 	ES(-68, 43), 
-	ES(-277, -42), 	ES(-143, 62), 	ES(-299, 109), 	ES(77, 43), 	ES(-105, 119), 	ES(-93, 158), 	ES(34, 120), 	ES(-17, 2), 
-	ES(125, -383), 	ES(46, -183), 	ES(166, -153), 	ES(-301, 10), 	ES(-126, -56), 	ES(42, -47), 	ES(191, -75), 	ES(380, -434), 
+	ES(312, -354), 	ES(285, -240), 	ES(213, -173), 	ES(-134, -95), 	ES(67, -174), 	ES(-47, -109), 	ES(211, -206), 	ES(335, -367), 
+	ES(209, -182), 	ES(61, -72), 	ES(4, -28), 	ES(-108, 3), 	ES(-125, 21), 	ES(-58, -17), 	ES(102, -74), 	ES(138, -148), 
+	ES(-95, -111), 	ES(-44, -10), 	ES(-242, 64), 	ES(-289, 104), 	ES(-270, 108), 	ES(-264, 67), 	ES(-114, 6), 	ES(-153, -50), 
+	ES(-228, -64), 	ES(-276, 45), 	ES(-385, 133), 	ES(-489, 185), 	ES(-487, 185), 	ES(-352, 136), 	ES(-370, 97), 	ES(-437, 28), 
+	ES(-249, -27), 	ES(-301, 104), 	ES(-355, 171), 	ES(-504, 210), 	ES(-475, 212), 	ES(-347, 188), 	ES(-348, 155), 	ES(-425, 65), 
+	ES(-355, 3), 	ES(18, 80), 	ES(-226, 148), 	ES(-295, 187), 	ES(-157, 183), 	ES(89, 155), 	ES(17, 155), 	ES(-104, 36), 
+	ES(-287, -42), 	ES(-116, 62), 	ES(-262, 103), 	ES(93, 36), 	ES(-90, 115), 	ES(-74, 155), 	ES(31, 121), 	ES(-36, 6), 
+	ES(213, -417), 	ES(82, -193), 	ES(205, -165), 	ES(-294, 5), 	ES(-131, -60), 	ES(35, -51), 	ES(199, -83), 	ES(496, -473), 
 };
 
-EvalScore BISHOP_PAIR = ES(75, 210);
+EvalScore BISHOP_PAIR = ES(39, 120);
 
 EvalScore KNIGHT_MOB[] = {
-	ES(-56, 1),
+	ES(-2, 31),
 	ES(-19, 1),
-	ES(-10, 33),
-	ES(-5, 26),
-	ES(26, 11),
-	ES(32, 13),
-	ES(24, 15),
-	ES(35, 17),
-	ES(50, 26),
+	ES(-11, 9),
+	ES(-14, -17),
+	ES(18, 0),
+	ES(-63, -92),
+	ES(24, 6),
+	ES(-5, 52),
+	ES(29, 21),
 };
 
 EvalScore BISHOP_MOB[] = {
-	ES(-337, -23),
-	ES(-311, -5),
-	ES(-313, -25),
-	ES(-254, -46),
-	ES(-214, -49),
-	ES(-169, -61),
-	ES(-139, -35),
-	ES(-113, -21),
-	ES(-95, 4),
-	ES(-71, 18),
-	ES(-55, 15),
-	ES(-27, 20),
-	ES(-16, 29),
-	ES(7, 18),
-	ES(26, 41),
-	ES(46, 58),
-	ES(56, 79),
-	ES(76, 106),
-	ES(101, 110),
-	ES(114, 131),
-	ES(140, 136),
-	ES(150, 166),
-	ES(165, 164),
-	ES(189, 196),
-	ES(213, 194),
-	ES(223, 223),
-	ES(234, 232),
+	ES(-301, -68),
+	ES(-424, -168),
+	ES(-317, -244),
+	ES(-277, -144),
+	ES(-218, -128),
+	ES(-214, -98),
+	ES(-164, -41),
+	ES(-132, -23),
+	ES(-115, 10),
+	ES(-101, 18),
+	ES(-72, 43),
+	ES(-40, 26),
+	ES(-5, 36),
+	ES(19, 68),
+	ES(43, 133),
+	ES(74, 173),
+	ES(93, 182),
+	ES(102, 216),
+	ES(128, 221),
+	ES(139, 244),
+	ES(166, 216),
+	ES(155, 273),
+	ES(238, 228),
+	ES(213, 258),
+	ES(330, 102),
+	ES(150, 177),
+	ES(235, 177),
 	ES(258, 255),
 	ES(266, 319),
 	ES(285, 315),
@@ -124,38 +124,73 @@ EvalScore BISHOP_MOB[] = {
 };
 
 EvalScore ROOK_MOB[] = {
-	ES(-441, -121),
+	ES(-148, -204),
+	ES(-495, -94),
+	ES(-372, -165),
+	ES(-307, -110),
+	ES(-224, -126),
+	ES(-192, -65),
+	ES(-141, -54),
+	ES(-116, -48),
+	ES(-106, -38),
+	ES(-86, -25),
+	ES(-72, -9),
+	ES(-45, -9),
+	ES(-23, 3),
+	ES(0, 13),
+	ES(30, 17),
+	ES(56, 23),
+	ES(80, 39),
+	ES(109, 54),
+	ES(128, 59),
+	ES(148, 75),
+	ES(172, 75),
+	ES(182, 101),
+	ES(194, 108),
+	ES(216, 96),
+	ES(262, 84),
+	ES(257, 98),
+	ES(243, 136),
+	ES(171, 137),
+	ES(152, 116),
+	ES(206, 114),
+	ES(218, 81),
+	ES(267, 103),
+};
+
+EvalScore QUEEN_MOB[] = {
+	ES(-554, -188),
 	ES(-495, -94),
 	ES(-201, -130),
-	ES(-154, -115),
-	ES(-64, -148),
-	ES(45, -162),
-	ES(43, -144),
-	ES(0, -102),
-	ES(-30, -67),
-	ES(-54, -40),
-	ES(-64, -29),
-	ES(-45, -17),
-	ES(-42, 7),
-	ES(-33, 15),
-	ES(-39, 24),
-	ES(-27, 38),
-	ES(-14, 44),
-	ES(-3, 56),
-	ES(16, 53),
-	ES(14, 85),
-	ES(25, 100),
-	ES(44, 122),
-	ES(58, 135),
-	ES(74, 149),
-	ES(98, 154),
-	ES(107, 159),
-	ES(140, 146),
-	ES(161, 131),
-	ES(175, 132),
-	ES(206, 114),
-	ES(226, 93),
-	ES(267, 104),
+	ES(-183, -136),
+	ES(-224, -444),
+	ES(-77, -454),
+	ES(-58, -404),
+	ES(-70, -213),
+	ES(-52, -154),
+	ES(-50, -98),
+	ES(-35, -74),
+	ES(-22, -32),
+	ES(-17, 0),
+	ES(-9, 12),
+	ES(-2, 28),
+	ES(7, 61),
+	ES(6, 82),
+	ES(13, 106),
+	ES(15, 130),
+	ES(19, 148),
+	ES(21, 176),
+	ES(37, 174),
+	ES(42, 188),
+	ES(77, 186),
+	ES(73, 179),
+	ES(117, 179),
+	ES(210, 135),
+	ES(227, 161),
+	ES(-190, -121),
+	ES(-204, -154),
+	ES(-146, -173),
+	ES(-253, -376),
 };
 
 EvalScore KING_MOB[] = {
@@ -163,10 +198,10 @@ EvalScore KING_MOB[] = {
 	ES(1, 1),
 	ES(2, 2),
 	ES(3, 3),
-	ES(-119, 73),
+	ES(-111, 50),
 	ES(-89, 24),
-	ES(24, 11),
-	ES(60, -29),
+	ES(28, -1),
+	ES(48, -8),
 };
 
 int white_eval(const Board &board) {
@@ -206,17 +241,20 @@ int white_eval(const Board &board) {
 		bishop_pair -= BISHOP_PAIR;
 
 	EvalScore mobility = 0;
-	int w_knight_mob = _mm_popcnt_u64(board.controlled_squares[OCC(WHITE)] & board.controlled_squares[KNIGHT]);
-	int b_knight_mob = _mm_popcnt_u64(board.controlled_squares[OCC(BLACK)] & board.controlled_squares[KNIGHT]);
+	int w_knight_mob = _mm_popcnt_u64(board.piece_control[WHITE_KNIGHT]);
+	int b_knight_mob = _mm_popcnt_u64(board.piece_control[BLACK_KNIGHT]);
 	mobility += KNIGHT_MOB[std::min(w_knight_mob, 8)] - KNIGHT_MOB[std::min(b_knight_mob, 8)];
-	int w_bishop_mob = _mm_popcnt_u64(board.controlled_squares[OCC(WHITE)] & board.controlled_squares[BISHOP]);
-	int b_bishop_mob = _mm_popcnt_u64(board.controlled_squares[OCC(BLACK)] & board.controlled_squares[BISHOP]);
+	int w_bishop_mob = _mm_popcnt_u64(board.piece_control[WHITE_BISHOP]);
+	int b_bishop_mob = _mm_popcnt_u64(board.piece_control[BLACK_BISHOP]);
 	mobility += BISHOP_MOB[std::min(w_bishop_mob, 31)] - BISHOP_MOB[std::min(b_bishop_mob, 31)];
-	int w_rook_mob = _mm_popcnt_u64(board.controlled_squares[OCC(WHITE)] & board.controlled_squares[ROOK]);
-	int b_rook_mob = _mm_popcnt_u64(board.controlled_squares[OCC(BLACK)] & board.controlled_squares[ROOK]);
+	int w_rook_mob = _mm_popcnt_u64(board.piece_control[WHITE_ROOK]);
+	int b_rook_mob = _mm_popcnt_u64(board.piece_control[BLACK_ROOK]);
 	mobility += ROOK_MOB[std::min(w_rook_mob, 31)] - ROOK_MOB[std::min(b_rook_mob, 31)];
-	int w_king_mob = _mm_popcnt_u64(board.controlled_squares[OCC(WHITE)] & board.controlled_squares[KING]);
-	int b_king_mob = _mm_popcnt_u64(board.controlled_squares[OCC(BLACK)] & board.controlled_squares[KING]);
+	int w_queen_mob = _mm_popcnt_u64(board.piece_control[WHITE_QUEEN]);
+	int b_queen_mob = _mm_popcnt_u64(board.piece_control[BLACK_QUEEN]);
+	mobility += QUEEN_MOB[std::min(w_queen_mob, 31)] - QUEEN_MOB[std::min(b_queen_mob, 31)];
+	int w_king_mob = _mm_popcnt_u64(board.piece_control[WHITE_KING]);
+	int b_king_mob = _mm_popcnt_u64(board.piece_control[BLACK_KING]);
 	mobility += KING_MOB[std::min(w_king_mob, 7)] - KING_MOB[std::min(b_king_mob, 7)];
 
 	EvalScore final_eval = material + psqt + bishop_pair + mobility;
@@ -284,28 +322,33 @@ std::vector<std::pair<double, double>> calc_grad(const Board &board) {
 		bishop_pair_grad.first -= alpha, bishop_pair_grad.second -= beta;
 	grads.push_back(bishop_pair_grad);
 
-	std::vector<std::pair<double, double>> knight_mob_grads(9), bishop_mob_grads(32), rook_mob_grads(32), king_mob_grads(8);
+	std::vector<std::pair<double, double>> knight_mob_grads(9), bishop_mob_grads(32), rook_mob_grads(32), queen_mob_grads(32), king_mob_grads(8);
 	
-	int w_knight_mob = _mm_popcnt_u64(board.controlled_squares[OCC(WHITE)] & board.controlled_squares[KNIGHT]);
-	int b_knight_mob = _mm_popcnt_u64(board.controlled_squares[OCC(BLACK)] & board.controlled_squares[KNIGHT]);
+	int w_knight_mob = _mm_popcnt_u64(board.piece_control[WHITE_KNIGHT]);
+	int b_knight_mob = _mm_popcnt_u64(board.piece_control[BLACK_KNIGHT]);
 	knight_mob_grads[std::min(w_knight_mob, 8)].first += alpha, knight_mob_grads[std::min(w_knight_mob, 8)].second += beta;
 	knight_mob_grads[std::min(b_knight_mob, 8)].first -= alpha, knight_mob_grads[std::min(b_knight_mob, 8)].second -= beta;
-	int w_bishop_mob = _mm_popcnt_u64(board.controlled_squares[OCC(WHITE)] & board.controlled_squares[BISHOP]);
-	int b_bishop_mob = _mm_popcnt_u64(board.controlled_squares[OCC(BLACK)] & board.controlled_squares[BISHOP]);
+	int w_bishop_mob = _mm_popcnt_u64(board.piece_control[WHITE_BISHOP]);
+	int b_bishop_mob = _mm_popcnt_u64(board.piece_control[BLACK_BISHOP]);
 	bishop_mob_grads[std::min(w_bishop_mob, 31)].first += alpha, bishop_mob_grads[std::min(w_bishop_mob, 31)].second += beta;
 	bishop_mob_grads[std::min(b_bishop_mob, 31)].first -= alpha, bishop_mob_grads[std::min(b_bishop_mob, 31)].second -= beta;
-	int w_rook_mob = _mm_popcnt_u64(board.controlled_squares[OCC(WHITE)] & board.controlled_squares[ROOK]);
-	int b_rook_mob = _mm_popcnt_u64(board.controlled_squares[OCC(BLACK)] & board.controlled_squares[ROOK]);
+	int w_rook_mob = _mm_popcnt_u64(board.piece_control[WHITE_ROOK]);
+	int b_rook_mob = _mm_popcnt_u64(board.piece_control[BLACK_ROOK]);
 	rook_mob_grads[std::min(w_rook_mob, 31)].first += alpha, rook_mob_grads[std::min(w_rook_mob, 31)].second += beta;
 	rook_mob_grads[std::min(b_rook_mob, 31)].first -= alpha, rook_mob_grads[std::min(b_rook_mob, 31)].second -= beta;
-	int w_king_mob = _mm_popcnt_u64(board.controlled_squares[OCC(WHITE)] & board.controlled_squares[KING]);
-	int b_king_mob = _mm_popcnt_u64(board.controlled_squares[OCC(BLACK)] & board.controlled_squares[KING]);
+	int w_queen_mob = _mm_popcnt_u64(board.piece_control[WHITE_QUEEN]);
+	int b_queen_mob = _mm_popcnt_u64(board.piece_control[BLACK_QUEEN]);
+	queen_mob_grads[std::min(w_queen_mob, 31)].first += alpha, queen_mob_grads[std::min(w_queen_mob, 31)].second += beta;
+	queen_mob_grads[std::min(b_queen_mob, 31)].first -= alpha, queen_mob_grads[std::min(b_queen_mob, 31)].second -= beta;
+	int w_king_mob = _mm_popcnt_u64(board.piece_control[WHITE_KING]);
+	int b_king_mob = _mm_popcnt_u64(board.piece_control[BLACK_KING]);
 	king_mob_grads[std::min(w_king_mob, 7)].first += alpha, king_mob_grads[std::min(w_king_mob, 7)].second += beta;
 	king_mob_grads[std::min(b_king_mob, 7)].first -= alpha, king_mob_grads[std::min(b_king_mob, 7)].second -= beta;
 
 	grads.insert(grads.end(), knight_mob_grads.begin(), knight_mob_grads.end());
 	grads.insert(grads.end(), bishop_mob_grads.begin(), bishop_mob_grads.end());
 	grads.insert(grads.end(), rook_mob_grads.begin(), rook_mob_grads.end());
+	grads.insert(grads.end(), queen_mob_grads.begin(), queen_mob_grads.end());
 	grads.insert(grads.end(), king_mob_grads.begin(), king_mob_grads.end());
 
 	return grads;

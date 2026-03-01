@@ -59,8 +59,12 @@ struct HistoryEntry {
 };
 
 struct Board {
-	Bitboard piece_boards[8] = {0};
-	Bitboard controlled_squares[8] = {0};
+    Bitboard piece_boards[8] = {0};
+    Bitboard side_control[2] = {0}; // side_control[WHITE] are squares controlled by WHITE pieces
+    Bitboard piece_control[16] = {0};
+    Bitboard pinned[2]; // pinned[WHITE] are pieces pinned to the WHITE king
+    Bitboard pinners[2]; // pinners[WHITE] are pieces pinning WHITE pieces
+    Bitboard checkers[2]; // checkers[WHITE] are pieces checking the WHITE king
 	bool side = WHITE;
 	uint8_t halfmove = 0;
 	uint8_t castling = 0xf; // 1111
@@ -107,6 +111,7 @@ struct Board {
 	bool see(Move, int);
 	Bitboard lva_(Square, int side, PieceType &p, Bitboard occ) const;
 	bool is_pseudolegal(Move) const;
+	bool is_legal(Move) const;
 	constexpr bool is_capture(Move m) const {
 		return (piece_boards[OPPOCC(side)] & square_bits(m.dst()));
 	}

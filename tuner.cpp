@@ -36,6 +36,7 @@ void init_params() {
 	for (auto &s : KNIGHT_MOB) params.push_back(&s);
 	for (auto &s : BISHOP_MOB) params.push_back(&s);
 	for (auto &s : ROOK_MOB) params.push_back(&s);
+	for (auto &s : QUEEN_MOB) params.push_back(&s);
 	for (auto &s : KING_MOB) params.push_back(&s);
 
 	// init adam stuff too
@@ -101,6 +102,10 @@ void dump_params() {
 	outfile << "};\n\nEvalScore ROOK_MOB[] = {" << std::endl;
 	for (int i = 0; i < sizeof(ROOK_MOB) / sizeof(EvalScore); i++) {
 		outfile << "	ES(" << ROOK_MOB[i].mg << ", " << ROOK_MOB[i].eg << "),\n";
+	}
+	outfile << "};\n\nEvalScore QUEEN_MOB[] = {" << std::endl;
+	for (int i = 0; i < sizeof(QUEEN_MOB) / sizeof(EvalScore); i++) {
+		outfile << "	ES(" << QUEEN_MOB[i].mg << ", " << QUEEN_MOB[i].eg << "),\n";
 	}
 	outfile << "};\n\nEvalScore KING_MOB[] = {" << std::endl;
 	for (int i = 0; i < sizeof(KING_MOB) / sizeof(EvalScore); i++) {
