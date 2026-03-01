@@ -100,7 +100,10 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 		return quiesce(ti, ply, alpha, beta);
 	}
 
+	auto tt_entry = ttable.probe(board.zobrist);
+
 	Value best = -VALUE_INFINITE;
+	Move best_move = NullMove;
 
 	pzstd::vector<Move> moves;
 	board.legal_moves(moves);
@@ -108,8 +111,10 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	pzstd::vector<std::pair<Move, int>> scored_moves;
 	for (const auto &move : moves) {
 		int score = 0;
-		if (board.is_capture(move)) {
-			score = 1000000 + MVV[board.mailbox[move.dst()] & 7] - PieceValue[board.mailbox[move.src()] & 7];
+		if (tt_entry && tt_entry->move == move) {
+			score = 10000000; // ensure best move from ttable is searched first
+		} else if (board.is_capture(move)) {
+			score = 100000 + MVV[board.mailbox[move.dst()] & 7] - PieceValue[board.mailbox[move.src()] & 7];
 		} else {
 			score = ti.thread_hist.history[board.side][move.src()][move.dst()];
 		}
@@ -118,6 +123,8 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 	std::stable_sort(scored_moves.begin(), scored_moves.end(), [](const auto &a, const auto &b) {
 		return a.second > b.second;
 	});
+
+	TTFlags flag = TTFlags::UPPERBOUND; // assume upperbound until we can prove otherwise
 
 	for (auto &[move, val] : scored_moves) {
 		board.make_move(move);
@@ -133,11 +140,14 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 
 		if (score > alpha) {
 			alpha = score;
+			best_move = move;
+			flag = TTFlags::EXACT;
 		}
 
 		if (score >= beta) {
+			flag = TTFlags::LOWERBOUND;
 			ti.thread_hist.update_history(board, move, depth * depth);
-			return score;
+			break;
 		}
 	}
 
@@ -145,6 +155,8 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 		if (in_check) return -VALUE_MATE + ply;
 		else return 0;
 	}
+
+	ttable.store(board.zobrist, best_move, best, depth, flag);
 
 	return best;
 }

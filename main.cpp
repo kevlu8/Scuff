@@ -12,7 +12,7 @@
 #define MAX_TT (262144)
 
 // Options
-size_t TT_SIZE = 0;
+size_t TT_SIZE = 16;
 bool quiet = false;
 ThreadInfo *tis;
 
@@ -48,14 +48,12 @@ void run_uci() {
 				}
 			}
 			if (optionname == "Hash") {
-				// long long optionint = std::stoll(optionvalue);
-				// if (optionint < 1 || optionint > MAX_TT) {
-				// 	std::cerr << "Invalid hash size: " << optionint << std::endl;
-				// 	continue;
-				// }
-				// TT_SIZE = MAX_TT;
-				// while (TT_SIZE > optionint) TT_SIZE /= 2;
-				// TT_SIZE *= 1024 * 1024 / sizeof(TTable::TTBucket);
+				long long optionint = std::stoll(optionvalue);
+				if (optionint < 1 || optionint > MAX_TT) {
+					std::cerr << "Invalid hash size: " << optionint << std::endl;
+					continue;
+				}
+				TT_SIZE = optionint;
 			} else if (optionname == "Quiet") {
 				quiet = optionvalue == "true";
 			} else if (optionname == "Threads") {
@@ -70,10 +68,10 @@ void run_uci() {
 			}
 		} else if (command == "ucinewgame") {
 			board = Board();
-			// ttable.resize(TT_SIZE);
-			// for (int i = 0; i < num_threads; i++) {
-			// 	clear_search_vars(tis[i]);
-			// }
+			ttable.resize(TT_SIZE);
+			for (int i = 0; i < num_threads; i++) {
+				clear_search_vars(tis[i]);
+			}
 		} else if (command.substr(0, 8) == "position") {
 			// either `position startpos` or `position fen ...`
 			if (command.find("startpos") != std::string::npos) {
@@ -226,28 +224,28 @@ __attribute__((weak)) int main(int argc, char *argv[]) {
 		std::cout << tot_nodes << " nodes " << int(tot_nodes / ((double)(end - start) / CLOCKS_PER_SEC)) << " nps" << std::endl;
 		return 0;
 	}
-	// if (argc == 2 && std::string(argv[1]) == "avgeval") {
-	// 	// assume book is at ./lichess-big3-resolved.txt
-	// 	Board board = Board();
-	// 	std::ifstream bookfile("./lichess-big3-resolved.txt");
-	// 	std::string line;
-	// 	int64_t tot_eval = 0;
-	// 	int npositions = 0;
-	// 	if (!bookfile.is_open()) {
-	// 		std::cerr << "Could not open book file" << std::endl;
-	// 		return 1;
-	// 	}
-	// 	while (getline(bookfile, line)) {
-	// 		std::string fen = line.substr(0, line.find(' '));
-	// 		board.reset(fen);
-	// 		Value score = abs(eval(board, &tis[0].bs[0][0]));
-	// 		tot_eval += score;
-	// 		npositions++;
-	// 	}
-	// 	bookfile.close();
-	// 	std::cout << "info string Average eval over " << npositions << " positions: " << (tot_eval / npositions) << std::endl;
-	// 	return 0;
-	// }
+	if (argc == 2 && std::string(argv[1]) == "avgeval") {
+		// assume book is at ./lichess-big3-resolved.txt
+		Board board = Board();
+		std::ifstream bookfile("./lichess-big3-resolved.txt");
+		std::string line;
+		int64_t tot_eval = 0;
+		int npositions = 0;
+		if (!bookfile.is_open()) {
+			std::cerr << "Could not open book file" << std::endl;
+			return 1;
+		}
+		while (getline(bookfile, line)) {
+			std::string fen = line.substr(0, line.find(' '));
+			board.reset(fen);
+			Value score = abs(eval(board));
+			tot_eval += score;
+			npositions++;
+		}
+		bookfile.close();
+		std::cout << "info string Average eval over " << npositions << " positions: " << (tot_eval / npositions) << std::endl;
+		return 0;
+	}
 	std::cout << "HCEChessBot " << VERSION << " developed by kevlu8 and wdotmathree" << std::endl;
 	run_uci();
 }
