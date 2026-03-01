@@ -16,6 +16,7 @@ extern EvalScore KNIGHT_MOB[9];
 extern EvalScore BISHOP_MOB[32];
 extern EvalScore ROOK_MOB[32];
 extern EvalScore KING_MOB[8];
+extern EvalScore PASSED_PAWN;
 
 int white_eval(const Board &board);
 

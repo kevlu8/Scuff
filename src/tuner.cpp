@@ -37,6 +37,7 @@ void init_params() {
 	for (auto &s : BISHOP_MOB) params.push_back(&s);
 	for (auto &s : ROOK_MOB) params.push_back(&s);
 	for (auto &s : KING_MOB) params.push_back(&s);
+	params.push_back(&PASSED_PAWN);
 
 	// init adam stuff too
 	for (auto &p : params) {
@@ -106,7 +107,7 @@ void dump_params() {
 	for (int i = 0; i < sizeof(KING_MOB) / sizeof(EvalScore); i++) {
 		outfile << "	ES(" << KING_MOB[i].mg << ", " << KING_MOB[i].eg << "),\n";
 	}
-	outfile << "};\n";
+	outfile << "};\n\nEvalScore PASSED_PAWN = ES(" << PASSED_PAWN.mg << ", " << PASSED_PAWN.eg << ");\n";
 	outfile.close();
 }
 
