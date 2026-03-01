@@ -5,6 +5,7 @@
 #include "includes.hpp"
 #include "history.hpp"
 #include "ttable.hpp"
+#include "movepicker.hpp"
 
 extern bool stop_search;
 extern uint64_t nodes[MAX_THREADS];
