@@ -168,7 +168,7 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 		Value score = -VALUE_INFINITE;
 
 		if (depth >= 3 && movecount >= 4) {
-			int r = 1;
+			int r = 0.77 + log(movecount) * log(depth) / 2.36;
 
 			int search_depth = newdepth - r;
 			score = -negamax<false>(ti, search_depth, ply + 1, -alpha - 1, -alpha);
