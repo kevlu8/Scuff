@@ -114,6 +114,9 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 		}
 	}
 
+	if (pv && depth >= 5 && (!tt_entry || tt_entry->move == NullMove))
+		depth--;	
+
 	Value cur_eval = -VALUE_INFINITE;
 	if (!in_check) {
 		cur_eval = eval(board);
