@@ -217,7 +217,8 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 		else return 0;
 	}
 
-	ttable.store(board.zobrist, best_move, best, depth, flag);
+	Move tt_move = best_move != NullMove ? best_move : (tt_entry ? tt_entry->move : NullMove);
+	ttable.store(board.zobrist, tt_move, best, depth, flag);
 
 	return best;
 }
