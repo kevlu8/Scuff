@@ -126,6 +126,20 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 			return cur_eval;
 	}
 
+	if (!pv && !in_check && depth >= 2) {
+		/**
+		 * Null move pruning
+		 */
+		int r = 4;
+		board.make_move(NullMove);
+		Value score = -negamax<false>(ti, depth - r, ply + 1, -beta, -beta + 1);
+		board.unmake_move();
+
+		if (score >= beta) {
+			return score;
+		}
+	}
+
 	Value best = -VALUE_INFINITE;
 	Move best_move = NullMove;
 
