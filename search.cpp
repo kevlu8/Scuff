@@ -34,6 +34,8 @@ Value quiesce(ThreadInfo &ti, int ply, Value alpha, Value beta) {
 	pzstd::vector<std::pair<Move, int>> scored_moves;
 	for (const auto &move : moves) {
 		int score = 0;
+		if (!board.see(move, 0)) continue;
+
 		if (board.is_capture(move)) {
 			score = 1000000 + MVV[board.mailbox[move.dst()] & 7] - PieceValue[board.mailbox[move.src()] & 7];
 		}
