@@ -163,6 +163,9 @@ Value negamax(ThreadInfo &ti, int depth, int ply, Value alpha, Value beta) {
 		if (best > -VALUE_MATE_MAX_PLY && ply != 0) {
 			if (movecount >= 5 + 2 * depth * depth)
 				break;
+
+			if (depth <= 10 && !board.see(move, -60 * depth))
+				continue;
 		}
 
 		int newdepth = depth - 1;
